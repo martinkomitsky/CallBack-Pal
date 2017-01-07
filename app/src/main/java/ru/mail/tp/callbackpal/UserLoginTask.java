@@ -2,10 +2,16 @@ package ru.mail.tp.callbackpal;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import ru.mail.tp.callbackpal.LoginActivity;
+import ru.mail.tp.callbackpal.api.models.ValidationCode;
+import ru.mail.tp.callbackpal.api.ValidationService;
 
 /**
  * Created by Martin on 25.12.2016.
@@ -44,6 +50,26 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... params) {
         // TODO: attempt authentication against a network service.
 
+
+        ValidationService validationService = ValidationService.retrofit.create(ValidationService.class);
+        final Call<ValidationCode> call =
+                validationService.requestValidationCode();
+
+        call.enqueue(new Callback<ValidationCode>() {
+            @Override
+            public void onResponse(Call<ValidationCode> call, Response<ValidationCode> response) {
+                Log.d("sas", "asdasd");
+//                final TextView textView = (TextView) findViewById(R.id.textView);
+//                textView.setText(response.body().toString());
+            }
+            @Override
+            public void onFailure(Call<ValidationCode> call, Throwable t) {
+                Log.d("not sas", "asdasd");
+//                final TextView textView = (TextView) findViewById(R.id.textView);
+//                textView.setText("Something went wrong: " + t.getMessage());
+            }
+        });
+
         try {
             // Simulate network access.
             Thread.sleep(2000);
@@ -66,10 +92,10 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(final Boolean success) {
         mActivityRef.get().mAuthTask = null;
-//        showProgress(false);
 
         if (success) {
-            mActivityRef.get().finish();
+            mActivityRef.get().showProgress(false);
+//            mActivityRef.get().finish();
         } else {
             mActivityRef.get().mPasswordView.setError(mActivityRef.get().getString(R.string.error_incorrect_password));
             mActivityRef.get().mPasswordView.requestFocus();

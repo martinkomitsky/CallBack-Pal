@@ -9,7 +9,6 @@ import java.lang.ref.WeakReference;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import ru.mail.tp.callbackpal.LoginActivity;
 import ru.mail.tp.callbackpal.api.models.ValidationCode;
 import ru.mail.tp.callbackpal.api.ValidationService;
 
@@ -25,23 +24,17 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
     private final String mEmail;
     private final String mPassword;
-//    public UserLoginTask mAuthTask = null;
-
-//    private UserLoginTask mAuthTask = LoginActivity.mAuthTask;
-//    private String[] DUMMY_CREDENTIALS = LoginActivity.DUMMY_CREDENTIALS;
-//    private void showProgress = LoginActivity.
-
+    private final String mPhone;
     private static WeakReference<LoginActivity> mActivityRef;
+
     public static void updateActivity(LoginActivity activity) {
         mActivityRef = new WeakReference<LoginActivity>(activity);
     }
 
-    UserLoginTask(String email, String password) {
+    UserLoginTask(String email, String password, String phone) {
         mEmail = email;
         mPassword = password;
-
-//        UserLoginTask mAuthTask = loginActivity.m
-
+        mPhone = phone;
     }
 
 
@@ -50,10 +43,8 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... params) {
         // TODO: attempt authentication against a network service.
 
-
         ValidationService validationService = ValidationService.retrofit.create(ValidationService.class);
-        final Call<ValidationCode> call =
-                validationService.requestValidationCode();
+        final Call<ValidationCode> call = validationService.requestValidationCode(mPhone);
 
         call.enqueue(new Callback<ValidationCode>() {
             @Override
@@ -70,12 +61,12 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
             }
         });
 
-        try {
-            // Simulate network access.
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            return false;
-        }
+//        try {
+//            // Simulate network access.
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            return false;
+//        }
 
         for (String credential : mActivityRef.get().DUMMY_CREDENTIALS) {
             String[] pieces = credential.split(":");

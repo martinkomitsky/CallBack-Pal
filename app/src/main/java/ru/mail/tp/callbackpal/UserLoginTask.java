@@ -2,6 +2,7 @@ package ru.mail.tp.callbackpal;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
@@ -49,15 +50,15 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
         call.enqueue(new Callback<ValidationCode>() {
             @Override
             public void onResponse(Call<ValidationCode> call, Response<ValidationCode> response) {
-                Log.d("sas", "asdasd");
-//                final TextView textView = (TextView) findViewById(R.id.textView);
-//                textView.setText(response.body().toString());
+                Log.d("[Phone Validation]", "asdasd");
+                final EditText editText = (EditText) mActivityRef.get().findViewById(R.id.password);
+                editText.setText(response.body().toString());
             }
             @Override
             public void onFailure(Call<ValidationCode> call, Throwable t) {
-                Log.d("not sas", "asdasd");
-//                final TextView textView = (TextView) findViewById(R.id.textView);
-//                textView.setText("Something went wrong: " + t.getMessage());
+                Log.d("[Phone Validation]", t.getMessage());
+                final EditText editText = (EditText) mActivityRef.get().findViewById(R.id.password);
+                editText.setText("Something went wrong: " + t.getMessage());
             }
         });
 

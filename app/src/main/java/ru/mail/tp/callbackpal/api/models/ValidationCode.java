@@ -21,8 +21,9 @@ public class ValidationCode {
     void ValidationCode() {
     }
 
-//    void ValidationCode(String function, Boolean result) {
-//        this.function = function;
-//        this.result = result;
-//    }
+    void ValidationCode(String function, Boolean result) {
+        this.function = function;
+        this.result = result;
+        this.pin = pin;
+    }
 }

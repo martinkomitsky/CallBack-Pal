@@ -42,7 +42,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
                     android:hint="@string/prompt_phone"
-                    android:inputType="phone"
+                    android:inputType="number|phone"
 
                     />
 

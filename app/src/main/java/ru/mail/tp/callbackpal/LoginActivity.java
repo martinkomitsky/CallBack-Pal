@@ -71,6 +71,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        this.setTitle(getResources().getString(R.string.action_sign_in_short));
+
         UserLoginTask.updateActivity(this);
 
         // Set up the login form.

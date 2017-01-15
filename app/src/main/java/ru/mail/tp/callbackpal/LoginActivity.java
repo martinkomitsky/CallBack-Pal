@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,6 +31,8 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.github.pinball83.maskededittext.MaskedEditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +65,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     // UI references.
     private AutoCompleteTextView mEmailView;
-    private EditText mPhoneView;
+    private MaskedEditText mPhoneView;
     public EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
@@ -77,7 +80,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         // Set up the login form.
 
-        TextView number = (TextView) findViewById(R.id.number);
         TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
 //        String string = tManager.getLine1Number();
@@ -85,8 +87,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 //        number.setText(string);
 
 
-        mPhoneView = (EditText) findViewById(R.id.number);
-
+        mPhoneView = (MaskedEditText) findViewById(R.id.number_masked);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
 
@@ -174,7 +175,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String phone = mPhoneView.getText().toString();
+//        String phone = mPhoneView.getText().toString();
+        String phone = mPhoneView.getUnmaskedText();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
@@ -182,22 +184,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
+//        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+//            mPasswordView.setError(getString(R.string.error_invalid_password));
+//            focusView = mPasswordView;
+//            cancel = true;
+//        }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
+//        if (TextUtils.isEmpty(email)) {
+//            mEmailView.setError(getString(R.string.error_field_required));
+//            focusView = mEmailView;
+//            cancel = true;
+//        } else if (!isEmailValid(email)) {
+//            mEmailView.setError(getString(R.string.error_invalid_email));
+//            focusView = mEmailView;
+//            cancel = true;
+//        }
 
         // Check for a valid phone.
         if (TextUtils.isEmpty(phone)) {
@@ -205,7 +207,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             focusView = mPhoneView;
             cancel = true;
         } else if (!isPhoneValid(phone)) {
-            mPhoneView.setError(getString(R.string.error_invalid_email));
+            mPhoneView.setError(getString(R.string.error_invalid_phone));
             focusView = mPhoneView;
             cancel = true;
         }
@@ -224,7 +226,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isPhoneValid(String phone) {
-        return phone.contains("+");
+        return phone.length() == 10;
     }
 
     private boolean isEmailValid(String email) {

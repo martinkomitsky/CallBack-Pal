@@ -45,7 +45,7 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
         // TODO: attempt authentication against a network service.
 
         ValidationService validationService = ValidationService.retrofit.create(ValidationService.class);
-        final Call<ValidationCode> call = validationService.requestValidationCode(mPhone);
+        final Call<ValidationCode> call = validationService.requestValidationCode("+7" + mPhone);
 
         call.enqueue(new Callback<ValidationCode>() {
             @Override

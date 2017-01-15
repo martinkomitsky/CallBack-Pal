@@ -50,9 +50,10 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
         call.enqueue(new Callback<ValidationCode>() {
             @Override
             public void onResponse(Call<ValidationCode> call, Response<ValidationCode> response) {
-                Log.d("[Phone Validation]", "asdasd");
+                Log.d("[Phone Validation]", String.valueOf(response.body().getPin()));
+                mActivityRef.get().validationPin = response.body().getPin();
                 final EditText editText = (EditText) mActivityRef.get().findViewById(R.id.password);
-                editText.setText(response.body().toString());
+//                editText.setText(response.body().toString());
             }
             @Override
             public void onFailure(Call<ValidationCode> call, Throwable t) {

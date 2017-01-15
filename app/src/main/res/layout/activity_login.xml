@@ -45,7 +45,7 @@
                     android:textSize="18sp"
                     android:hint="@string/prompt_phone"
                     android:inputType="number|phone"
-
+                    android:visibility="gone"
                     />
 
             </android.support.design.widget.TextInputLayout>
@@ -79,7 +79,8 @@
                     android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:visibility="gone"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -95,16 +96,17 @@
                     android:imeActionId="@+id/login"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
-                    android:inputType="textPassword"
+                    android:inputType="textPassword|number"
                     android:maxLines="1"
+                    android:maxLength="4"
                     android:singleLine="true"
-                    android:editable="false" />
+                    android:editable="false"
+                    android:visibility="gone" />
 
             </android.support.design.widget.TextInputLayout>
 
             <Button
                 android:id="@+id/email_sign_in_button"
-                style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
                 android:layout_marginTop="16dp"
@@ -112,6 +114,13 @@
                 android:textStyle="bold"
                 tools:style="@style/Widget.AppCompat.Button.Colored"
                 android:background="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/callback_caption"
+                android:text="@string/callback_caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
 
         </LinearLayout>
     </ScrollView>

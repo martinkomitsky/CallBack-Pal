@@ -21,9 +21,13 @@ public class ValidationCode {
     void ValidationCode() {
     }
 
-    void ValidationCode(String function, Boolean result) {
+    void ValidationCode(String function, Boolean result, Integer pin) {
         this.function = function;
         this.result = result;
         this.pin = pin;
+    }
+
+    public String getPin () {
+        return String.valueOf(this.pin);
     }
 }

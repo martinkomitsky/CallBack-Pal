@@ -20,7 +20,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -63,6 +65,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 //    private UserLoginTask mAuthTask = null;
     public static UserLoginTask mAuthTask = null;
 
+    public String validationPin;
+
     // UI references.
     private AutoCompleteTextView mEmailView;
     private MaskedEditText mPhoneView;
@@ -78,8 +82,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         UserLoginTask.updateActivity(this);
 
-        // Set up the login form.
-
         TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
 //        String string = tManager.getLine1Number();
@@ -87,6 +89,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 //        number.setText(string);
 
 
+        // Set up the login form.
         mPhoneView = (MaskedEditText) findViewById(R.id.number_masked);
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -108,6 +111,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+
+        mPasswordView.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String enteredPin = s.toString();
+                if (enteredPin.length() == 4) {
+                    Log.d("edit", enteredPin);
+                    if (isPasswordValid(enteredPin)) {
+                        Log.d("edit", "success!!!");
+                    }
+                }
             }
         });
 
@@ -220,6 +237,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
+
+            // TODO: add "if" and move to another fn
+            mPasswordView.setVisibility(View.VISIBLE);
+            mPasswordView.requestFocus();
+            mPhoneView.setEnabled(false);
+
+            TextView callbackCaption = (TextView) findViewById(R.id.callback_caption);
+            callbackCaption.setVisibility(View.VISIBLE);
+
+            Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+            mEmailSignInButton.setVisibility(View.GONE);
+
             mAuthTask = new UserLoginTask(email, password, phone);
             mAuthTask.execute((Void) null);
         }
@@ -234,7 +263,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 4;
+        return password.length() == 4 && password.equals(validationPin);
     }
 
     /**

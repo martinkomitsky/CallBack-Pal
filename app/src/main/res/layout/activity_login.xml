@@ -9,6 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/colorPrimaryLight"
     tools:context="ru.mail.tp.callbackpal.LoginActivity">
 
     <!-- Login progress -->
@@ -54,7 +55,7 @@
             android:layout_height="wrap_content">
 
             <com.github.pinball83.maskededittext.MaskedEditText
-                android:id="@+id/masked_edit_text"
+                android:id="@+id/number_masked"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
@@ -63,7 +64,7 @@
                 app:mask="+7 (***) *** **-**"
                 app:notMaskedSymbol="*"
                 app:maskIconColor="@color/colorPrimary"
-                />
+                android:layout_marginTop="50sp" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -105,10 +106,12 @@
                 android:id="@+id/email_sign_in_button"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/action_validate_phone"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:style="@style/Widget.AppCompat.Button.Colored"
+                android:background="@color/colorPrimary" />
 
         </LinearLayout>
     </ScrollView>

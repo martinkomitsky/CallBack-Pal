@@ -123,6 +123,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     Log.d("edit", enteredPin);
                     if (isPasswordValid(enteredPin)) {
                         Log.d("edit", "success!!!");
+                    } else {
+                        mPasswordView.setError(getString(R.string.error_invalid_password));
                     }
                 }
             }
@@ -246,6 +248,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             TextView callbackCaption = (TextView) findViewById(R.id.callback_caption);
             callbackCaption.setVisibility(View.VISIBLE);
 
+            TextView retryValidation = (TextView) findViewById(R.id.retry_validation);
+            retryValidation.setVisibility(View.VISIBLE);
+
             Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
             mEmailSignInButton.setVisibility(View.GONE);
 
@@ -356,6 +361,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d("SAS", "onSaveInstanceState");
+    }
+
+
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.d("SAS", "onRestoreInstanceState");
+    }
 
 }
 

@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -121,10 +122,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 String enteredPin = s.toString();
                 if (enteredPin.length() == 4) {
                     Log.d("edit", enteredPin);
+
+                    SharedPreferences pref =  getApplicationContext().getSharedPreferences("ValidationData", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+
                     if (isPasswordValid(enteredPin)) {
                         Log.d("edit", "success!!!");
+
+                        editor.putBoolean("phone_validated", true);
+                        editor.putString("phone", "+7" + mPhoneView.getUnmaskedText());
+                        editor.apply();
+
                     } else {
                         mPasswordView.setError(getString(R.string.error_invalid_password));
+
+                        editor.putBoolean("phone_validated", false);
+                        editor.apply();
                     }
                 }
             }

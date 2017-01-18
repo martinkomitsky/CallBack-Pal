@@ -3,10 +3,7 @@ package ru.mail.tp.callbackpal;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.EditText;
-import android.widget.TextView;
-
 import java.lang.ref.WeakReference;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -70,13 +67,13 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 //            return false;
 //        }
 
-        for (String credential : mActivityRef.get().DUMMY_CREDENTIALS) {
-            String[] pieces = credential.split(":");
-            if (pieces[0].equals(mEmail)) {
-                // Account exists, return true if the password matches.
-                return pieces[1].equals(mPassword);
-            }
-        }
+//        for (String credential : mActivityRef.get().DUMMY_CREDENTIALS) {
+//            String[] pieces = credential.split(":");
+//            if (pieces[0].equals(mEmail)) {
+//                // Account exists, return true if the password matches.
+//                return pieces[1].equals(mPassword);
+//            }
+//        }
 
         // TODO: register the new account here.
         return true;

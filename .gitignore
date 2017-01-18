@@ -40,7 +40,7 @@ captures/
 *.jks
 
 Thumbs.db
-
+test.xml
 *.iml
 .idea
 .gradle

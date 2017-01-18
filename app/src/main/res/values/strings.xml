@@ -17,5 +17,5 @@
         completions."
     </string>
     <string name="callback_caption">The system will call to you shortly. Enter the code above.</string>
-    <string name="retry_validation">Did not receive a call? Retry</string>
+    <string name="retry_validation">Did not receive a call? <u>Retry</u>.</string>
 </resources>

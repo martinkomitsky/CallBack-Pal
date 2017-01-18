@@ -1,6 +1,7 @@
 package ru.mail.tp.callbackpal;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,12 +12,19 @@ import java.lang.ref.WeakReference;
 
 public class SplashScreenActivity extends AppCompatActivity {
     static boolean backPressed = false;
+
+    public static Boolean isValidated;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         getSupportActionBar().hide();
         backPressed = false;
+
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("ValidationData", MODE_PRIVATE);
+
+        isValidated = pref.getBoolean("phone_validated", false);
 
         ActivityStarter activityStarter = new ActivityStarter(this);
         ThreadSleep threadSleep = new ThreadSleep(activityStarter);
@@ -36,7 +44,6 @@ public class SplashScreenActivity extends AppCompatActivity {
         public void run() {
             try {
                 sleep(2000);
-                Log.d("flag", Boolean.toString(backPressed));
                 if (!backPressed) {
                     activityStarter.sendMessage(new Message());
                 }
@@ -50,7 +57,6 @@ public class SplashScreenActivity extends AppCompatActivity {
             super();
             this.activityStarter = aS;
         }
-
     }
 
     private static class ActivityStarter extends Handler {
@@ -64,11 +70,17 @@ public class SplashScreenActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             SplashScreenActivity hardLink = this.link.get();
             if (hardLink != null) {
-                Intent startSecondActivity = new Intent(hardLink, LoginActivity.class);
-                hardLink.startActivity(startSecondActivity);
-                hardLink.finish();
+
+                if (isValidated) {
+                    Log.d("Phone is", "validated");
+                } else {
+                    Log.d("Phone is", "not validated");
+
+                    Intent startSecondActivity = new Intent(hardLink, LoginActivity.class);
+                    hardLink.startActivity(startSecondActivity);
+                    hardLink.finish();
+                }
             }
         }
-
     }
 }

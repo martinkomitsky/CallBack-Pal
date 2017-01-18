@@ -73,13 +73,14 @@ public class SplashScreenActivity extends AppCompatActivity {
 
                 if (isValidated) {
                     Log.d("Phone is", "validated");
+                    Intent startSecondActivity = new Intent(hardLink, ContactsListActivity.class);
+                    hardLink.startActivity(startSecondActivity);
                 } else {
                     Log.d("Phone is", "not validated");
-
                     Intent startSecondActivity = new Intent(hardLink, LoginActivity.class);
                     hardLink.startActivity(startSecondActivity);
-                    hardLink.finish();
                 }
+                hardLink.finish();
             }
         }
     }

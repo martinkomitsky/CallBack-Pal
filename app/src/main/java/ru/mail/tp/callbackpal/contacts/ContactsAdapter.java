@@ -54,6 +54,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
                         .setAction(CallbackIntentService.ACTION_INIT_CALLBACK)
                         .putExtra(CallbackIntentService.NUMBER_A, phoneA)
                         .putExtra(CallbackIntentService.NUMBER_B, currentPhone);
+                mContext.startService(intent);
             }
 
         });

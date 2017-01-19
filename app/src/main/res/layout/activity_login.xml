@@ -113,7 +113,8 @@
                 android:text="@string/action_validate_phone"
                 android:textStyle="bold"
                 tools:style="@style/Widget.AppCompat.Button.Colored"
-                android:background="@color/colorPrimary" />
+                android:background="@color/colorPrimary"
+                android:textColor="@color/whitesas" />
 
             <TextView
                 android:id="@+id/callback_caption"

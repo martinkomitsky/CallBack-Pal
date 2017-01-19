@@ -10,14 +10,6 @@ public class ValidationCode {
     Boolean result;
     Integer pin;
 
-//    int contributions;
-
-//    @Override
-//    public String toString() {
-//        return function + " (" + result + ")";
-//    }
-
-
     void ValidationCode() {
     }
 

@@ -3,7 +3,6 @@ package ru.mail.tp.callbackpal;
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.EditText;
 
 import retrofit2.Call;
 import retrofit2.Callback;

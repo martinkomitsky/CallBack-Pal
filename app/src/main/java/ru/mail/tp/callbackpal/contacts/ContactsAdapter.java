@@ -14,7 +14,6 @@ import android.widget.Toast;
 import java.util.List;
 
 import ru.mail.tp.callbackpal.CallbackIntentService;
-import ru.mail.tp.callbackpal.ContactsListActivity;
 import ru.mail.tp.callbackpal.R;
 
 

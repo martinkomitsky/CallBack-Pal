@@ -7,16 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 import ru.mail.tp.callbackpal.R;
 
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>{
-    private List<Contact> contactVOList;
+    private List<Contact> contactList;
     private Context mContext;
     public ContactsAdapter(List<Contact> contactList, Context mContext){
-        this.contactVOList = contactList;
+        this.contactList = contactList;
         this.mContext = mContext;
     }
 
@@ -28,15 +29,19 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     }
 
     @Override
-    public void onBindViewHolder(ContactViewHolder holder, int position) {
-        Contact contactVO = contactVOList.get(position);
-        holder.tvContactName.setText(contactVO.getContactName());
-        holder.tvPhoneNumber.setText(contactVO.getContactNumber());
+    public void onBindViewHolder(final ContactViewHolder holder, final int position) {
+        final Contact contact= contactList.get(position);
+        holder.tvContactName.setText(contact.getContactName());
+        holder.tvPhoneNumber.setText(contact.getContactNumber());
 
         holder.itemView.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
+                String currentPhone = holder.tvPhoneNumber.getText().toString().replaceAll("[^0-9+]", "");
+//                holder.tvPhoneNumber.getText(contactList.get(position).getContactNumber());
+                Toast.makeText(mContext,
+                        currentPhone, Toast.LENGTH_LONG).show();
             }
 
         });
@@ -44,7 +49,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     @Override
     public int getItemCount() {
-        return contactVOList.size();
+        return contactList.size();
     }
 
     public static class ContactViewHolder extends RecyclerView.ViewHolder{

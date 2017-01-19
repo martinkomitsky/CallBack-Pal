@@ -39,7 +39,6 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        // TODO: attempt authentication against a network service.
 
         ValidationService validationService = ValidationService.retrofit.create(ValidationService.class);
         final Call<ValidationCode> call = validationService.requestValidationCode("+7" + mPhone);
@@ -50,6 +49,7 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
                 Log.d("[Phone Validation]", String.valueOf(response.body().getPin()));
                 mActivityRef.get().validationPin = response.body().getPin();
             }
+
             @Override
             public void onFailure(Call<ValidationCode> call, Throwable t) {
                 Log.d("[Phone Validation]", t.getMessage());

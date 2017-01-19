@@ -99,8 +99,6 @@
                     android:inputType="textPassword|number"
                     android:maxLines="1"
                     android:maxLength="4"
-                    android:singleLine="true"
-                    android:editable="false"
                     android:visibility="gone" />
 
             </android.support.design.widget.TextInputLayout>
@@ -112,7 +110,6 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/action_validate_phone"
                 android:textStyle="bold"
-                tools:style="@style/Widget.AppCompat.Button.Colored"
                 android:background="@color/colorPrimary"
                 android:textColor="@color/whitesas" />
 

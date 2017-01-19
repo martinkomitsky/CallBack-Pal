@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -132,6 +133,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         editor.putBoolean("phone_validated", true);
                         editor.putString("phone", "+7" + mPhoneView.getUnmaskedText());
                         editor.apply();
+
+                        Intent startSecondActivity = new Intent(LoginActivity.this, ContactsListActivity.class);
+                        LoginActivity.this.startActivity(startSecondActivity);
 
                     } else {
                         mPasswordView.setError(getString(R.string.error_invalid_password));

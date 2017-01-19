@@ -49,8 +49,6 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
             public void onResponse(Call<ValidationCode> call, Response<ValidationCode> response) {
                 Log.d("[Phone Validation]", String.valueOf(response.body().getPin()));
                 mActivityRef.get().validationPin = response.body().getPin();
-                final EditText editText = (EditText) mActivityRef.get().findViewById(R.id.password);
-//                editText.setText(response.body().toString());
             }
             @Override
             public void onFailure(Call<ValidationCode> call, Throwable t) {
@@ -59,13 +57,6 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
                 editText.setText("Something went wrong: " + t.getMessage());
             }
         });
-
-//        try {
-//            // Simulate network access.
-//            Thread.sleep(2000);
-//        } catch (InterruptedException e) {
-//            return false;
-//        }
 
 //        for (String credential : mActivityRef.get().DUMMY_CREDENTIALS) {
 //            String[] pieces = credential.split(":");

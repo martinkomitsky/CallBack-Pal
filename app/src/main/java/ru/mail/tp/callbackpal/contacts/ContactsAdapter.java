@@ -1,6 +1,8 @@
 package ru.mail.tp.callbackpal.contacts;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
+
+import ru.mail.tp.callbackpal.CallbackIntentService;
+import ru.mail.tp.callbackpal.ContactsListActivity;
 import ru.mail.tp.callbackpal.R;
 
 
@@ -40,6 +45,15 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             public void onClick(View v) {
                 String currentPhone = holder.tvPhoneNumber.getText().toString().replaceAll("[^0-9+]", "");
                 Toast.makeText(mContext, currentPhone, Toast.LENGTH_LONG).show();
+
+                SharedPreferences pref = mContext.getApplicationContext().getSharedPreferences("ValidationData", 0);
+
+                String phoneA = pref.getString("phone", null);
+
+                Intent intent = new Intent(mContext.getApplicationContext(), CallbackIntentService.class)
+                        .setAction(CallbackIntentService.ACTION_INIT_CALLBACK)
+                        .putExtra(CallbackIntentService.NUMBER_A, phoneA)
+                        .putExtra(CallbackIntentService.NUMBER_B, currentPhone);
             }
 
         });

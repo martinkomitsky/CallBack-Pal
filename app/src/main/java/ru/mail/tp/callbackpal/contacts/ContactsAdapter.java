@@ -39,9 +39,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
             @Override
             public void onClick(View v) {
                 String currentPhone = holder.tvPhoneNumber.getText().toString().replaceAll("[^0-9+]", "");
-//                holder.tvPhoneNumber.getText(contactList.get(position).getContactNumber());
-                Toast.makeText(mContext,
-                        currentPhone, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, currentPhone, Toast.LENGTH_LONG).show();
             }
 
         });

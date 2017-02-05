@@ -13,13 +13,13 @@ import ru.mail.tp.callbackpal.api.models.ValidationCode;
  */
 
 public interface ValidationService {
-    @GET("api/callback/?function=generatePin")
-    Call<ValidationCode> requestValidationCode(
-            @Query("number") String phone
-    );
+	@GET("api/callback/?function=generatePin")
+	Call<ValidationCode> requestValidationCode(
+			@Query("number") String phone
+	);
 
-    Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://komitsky.xyz/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
+	Retrofit retrofit = new Retrofit.Builder()
+			.baseUrl("http://komitsky.xyz/")
+			.addConverterFactory(GsonConverterFactory.create())
+			.build();
 }

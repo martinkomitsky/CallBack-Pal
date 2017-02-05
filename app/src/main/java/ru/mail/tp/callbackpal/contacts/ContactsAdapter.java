@@ -18,63 +18,63 @@ import ru.mail.tp.callbackpal.R;
 
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>{
-    private List<Contact> contactList;
-    private Context mContext;
-    public ContactsAdapter(List<Contact> contactList, Context mContext){
-        this.contactList = contactList;
-        this.mContext = mContext;
-    }
+	private List<Contact> contactList;
+	private Context mContext;
+	public ContactsAdapter(List<Contact> contactList, Context mContext){
+		this.contactList = contactList;
+		this.mContext = mContext;
+	}
 
-    @Override
-    public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.view_single_contact, null);
-        ContactViewHolder contactViewHolder = new ContactViewHolder(view);
-        return contactViewHolder;
-    }
+	@Override
+	public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+		View view = LayoutInflater.from(mContext).inflate(R.layout.view_single_contact, null);
+		ContactViewHolder contactViewHolder = new ContactViewHolder(view);
+		return contactViewHolder;
+	}
 
-    @Override
-    public void onBindViewHolder(final ContactViewHolder holder, final int position) {
-        final Contact contact= contactList.get(position);
-        holder.tvContactName.setText(contact.getContactName());
-        holder.tvPhoneNumber.setText(contact.getContactNumber());
+	@Override
+	public void onBindViewHolder(final ContactViewHolder holder, final int position) {
+		final Contact contact= contactList.get(position);
+		holder.tvContactName.setText(contact.getContactName());
+		holder.tvPhoneNumber.setText(contact.getContactNumber());
 
-        holder.itemView.setOnClickListener(new View.OnClickListener(){
+		holder.itemView.setOnClickListener(new View.OnClickListener(){
 
-            @Override
-            public void onClick(View v) {
-                String currentPhone = holder.tvPhoneNumber.getText().toString().replaceAll("[^0-9+]", "");
-                Toast.makeText(mContext, currentPhone, Toast.LENGTH_LONG).show();
+			@Override
+			public void onClick(View v) {
+				String currentPhone = holder.tvPhoneNumber.getText().toString().replaceAll("[^0-9+]", "");
+				Toast.makeText(mContext, currentPhone, Toast.LENGTH_LONG).show();
 
-                SharedPreferences pref = mContext.getApplicationContext().getSharedPreferences("ValidationData", 0);
+				SharedPreferences pref = mContext.getApplicationContext().getSharedPreferences("ValidationData", 0);
 
-                String phoneA = pref.getString("phone", null);
+				String phoneA = pref.getString("phone", null);
 
-                Intent intent = new Intent(mContext.getApplicationContext(), CallbackIntentService.class)
-                        .setAction(CallbackIntentService.ACTION_INIT_CALLBACK)
-                        .putExtra(CallbackIntentService.NUMBER_A, phoneA)
-                        .putExtra(CallbackIntentService.NUMBER_B, currentPhone);
-                mContext.startService(intent);
-            }
+				Intent intent = new Intent(mContext.getApplicationContext(), CallbackIntentService.class)
+						.setAction(CallbackIntentService.ACTION_INIT_CALLBACK)
+						.putExtra(CallbackIntentService.NUMBER_A, phoneA)
+						.putExtra(CallbackIntentService.NUMBER_B, currentPhone);
+				mContext.startService(intent);
+			}
 
-        });
-    }
+		});
+	}
 
-    @Override
-    public int getItemCount() {
-        return contactList.size();
-    }
+	@Override
+	public int getItemCount() {
+		return contactList.size();
+	}
 
-    public static class ContactViewHolder extends RecyclerView.ViewHolder{
+	public static class ContactViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView ivContactImage;
-        TextView tvContactName;
-        TextView tvPhoneNumber;
+		ImageView ivContactImage;
+		TextView tvContactName;
+		TextView tvPhoneNumber;
 
-        public ContactViewHolder(View itemView) {
-            super(itemView);
-            ivContactImage = (ImageView) itemView.findViewById(R.id.ivContactImage);
-            tvContactName = (TextView) itemView.findViewById(R.id.tvContactName);
-            tvPhoneNumber = (TextView) itemView.findViewById(R.id.tvPhoneNumber);
-        }
-    }
+		public ContactViewHolder(View itemView) {
+			super(itemView);
+			ivContactImage = (ImageView) itemView.findViewById(R.id.ivContactImage);
+			tvContactName = (TextView) itemView.findViewById(R.id.tvContactName);
+			tvPhoneNumber = (TextView) itemView.findViewById(R.id.tvPhoneNumber);
+		}
+	}
 }

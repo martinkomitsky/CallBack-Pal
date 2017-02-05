@@ -1,26 +1,20 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <!--<item name="colorPrimary">@color/colorPrimary</item>-->
-        <item name="colorPrimary">#8bc34a</item>
-        <!--<item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
-        <item name="colorPrimaryDark">#76a73e</item>
-        <!--<item name="colorAccent">@color/colorAccent</item>-->
-        <item name="colorAccent">#8bc34a</item>
+	<!-- Base application theme. -->
+	<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+		<!-- Customize your theme here. -->
+		<item name="colorPrimary">#8bc34a</item>
+		<item name="colorPrimaryDark">#76a73e</item>
+		<item name="colorAccent">#8bc34a</item>
+		<item name="editTextColor">#F3EFF5</item>
+	</style>
 
-        <!--<item name="editTextColor">#342E37</item>-->
-        <item name="editTextColor">#F3EFF5</item>
-
-    </style>
-
-    <style name="AppThemeSplash" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">#8bc34a</item>
-        <item name="colorPrimaryDark">#8bc34a</item>
-        <item name="colorAccent">#8bc34a</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowFullscreen">true</item>
-    </style>
+	<style name="AppThemeSplash" parent="Theme.AppCompat.Light.DarkActionBar">
+		<item name="colorPrimary">#8bc34a</item>
+		<item name="colorPrimaryDark">#8bc34a</item>
+		<item name="colorAccent">#8bc34a</item>
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowFullscreen">true</item>
+	</style>
 
 </resources>

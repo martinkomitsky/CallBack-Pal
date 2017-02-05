@@ -1,31 +1,31 @@
 package ru.mail.tp.callbackpal.contacts;
 
 public class Contact {
-    private String ContactImage;
-    private String ContactName;
-    private String ContactNumber;
+	private String ContactImage;
+	private String ContactName;
+	private String ContactNumber;
 
-    public String getContactImage() {
-        return ContactImage;
-    }
+	public String getContactImage() {
+		return ContactImage;
+	}
 
-    public void setContactImage(String contactImage) {
-        this.ContactImage = ContactImage;
-    }
+	public void setContactImage(String contactImage) {
+		this.ContactImage = ContactImage;
+	}
 
-    public String getContactName() {
-        return ContactName;
-    }
+	public String getContactName() {
+		return ContactName;
+	}
 
-    public void setContactName(String contactName) {
-        ContactName = contactName;
-    }
+	public void setContactName(String contactName) {
+		ContactName = contactName;
+	}
 
-    public String getContactNumber() {
-        return ContactNumber;
-    }
+	public String getContactNumber() {
+		return ContactNumber;
+	}
 
-    public void setContactNumber(String contactNumber) {
-        ContactNumber = contactNumber;
-    }
+	public void setContactNumber(String contactNumber) {
+		ContactNumber = contactNumber;
+	}
 }

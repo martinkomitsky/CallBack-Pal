@@ -9,14 +9,14 @@ import ru.mail.tp.callbackpal.api.models.CommutateSubscribersResult;
 
 
 public interface CommutationService {
-    @GET("api/callback/?function=commutateSubscribers")
-    Call<CommutateSubscribersResult> requestCommutation(
-            @Query("numberA") String phoneA,
-            @Query("numberB") String phoneB
-    );
+	@GET("api/callback/?function=commutateSubscribers")
+	Call<CommutateSubscribersResult> requestCommutation(
+			@Query("numberA") String phoneA,
+			@Query("numberB") String phoneB
+	);
 
-    Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl("http://komitsky.xyz/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
+	Retrofit retrofit = new Retrofit.Builder()
+			.baseUrl("http://komitsky.xyz/")
+			.addConverterFactory(GsonConverterFactory.create())
+			.build();
 }

@@ -6,14 +6,14 @@ package ru.mail.tp.callbackpal.api.models;
 
 public class CommutateSubscribersResult {
 
-    String function;
-    Boolean result;
+	String function;
+	Boolean result;
 
-    void CommutateSubscribersResult() {
-    }
+	void CommutateSubscribersResult() {
+	}
 
-    void CommutateSubscribersResult(String function, Boolean result) {
-        this.function = function;
-        this.result = result;
-    }
+	void CommutateSubscribersResult(String function, Boolean result) {
+		this.function = function;
+		this.result = result;
+	}
 }

@@ -21,7 +21,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -83,13 +82,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 		this.setTitle(getResources().getString(R.string.action_sign_in_short));
 
 		UserLoginTask.updateActivity(this);
-
-		TelephonyManager tManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-
-//        String string = tManager.getLine1Number();
-		String string = tManager.getSimOperatorName();
-//        number.setText(string);
-
 
 		// Set up the login form.
 		mPhoneView = (MaskedEditText) findViewById(R.id.number_masked);

@@ -25,8 +25,8 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 	private final String mPhone;
 	private static WeakReference<LoginActivity> mActivityRef;
 
-	public static void updateActivity(LoginActivity activity) {
-		mActivityRef = new WeakReference<LoginActivity>(activity);
+	public static void updateActivity(LoginActivity loginActivity) {
+		mActivityRef = new WeakReference<>(loginActivity);
 	}
 
 	UserLoginTask(String email, String password, String phone) {
@@ -44,15 +44,22 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 		call.enqueue(new Callback<ValidationCode>() {
 			@Override
 			public void onResponse(Call<ValidationCode> call, Response<ValidationCode> response) {
-				Log.d("[Phone Validation]", String.valueOf(response.body().getPin()));
-				mActivityRef.get().validationPin = response.body().getPin();
+				LoginActivity activity = mActivityRef.get();
+
+				if (activity != null) {
+					Log.d("[Phone Validation]", String.valueOf(response.body().getPin()));
+					activity.validationPin = response.body().getPin();
+				}
 			}
 
 			@Override
 			public void onFailure(Call<ValidationCode> call, Throwable t) {
-				Log.d("[Phone Validation]", t.getMessage());
-				final EditText editText = (EditText) mActivityRef.get().findViewById(R.id.password);
-				editText.setText("Something went wrong: " + t.getMessage());
+				LoginActivity activity = mActivityRef.get();
+				if (activity != null) {
+					Log.d("[Phone Validation]", t.getMessage());
+					final EditText editText = (EditText) activity.findViewById(R.id.password);
+					editText.setText("Something went wrong: " + t.getMessage());
+				}
 			}
 		});
 
@@ -62,20 +69,28 @@ public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
 	@Override
 	protected void onPostExecute(final Boolean success) {
-		mActivityRef.get().mAuthTask = null;
+		LoginActivity activity = mActivityRef.get();
 
-		if (success) {
-			mActivityRef.get().showProgress(false);
-//            mActivityRef.get().finish();
-		} else {
-			mActivityRef.get().mPasswordView.setError(mActivityRef.get().getString(R.string.error_incorrect_password));
-			mActivityRef.get().mPasswordView.requestFocus();
+		if (activity != null) {
+			activity.mAuthTask = null;
+
+			if (success) {
+				activity.showProgress(false);
+//            activity.finish();
+			} else {
+				activity.mPasswordView.setError(activity.getString(R.string.error_incorrect_password));
+				activity.mPasswordView.requestFocus();
+			}
 		}
 	}
 
 	@Override
 	protected void onCancelled() {
-		mActivityRef.get().mAuthTask = null;
-		mActivityRef.get().showProgress(false);
+		LoginActivity activity = mActivityRef.get();
+
+		if (activity != null) {
+			activity.mAuthTask = null;
+			activity.showProgress(false);
+		}
 	}
 }

@@ -18,4 +18,5 @@
 	</string>
 	<string name="callback_caption">The system will call to you shortly. Enter the code above.</string>
 	<string name="retry_validation">Did not receive a call? <u>Retry</u>.</string>
+	<string name="image_avatar_description">Contact avatar</string>
 </resources>

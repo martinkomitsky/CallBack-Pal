@@ -79,7 +79,6 @@
 					android:hint="@string/prompt_email"
 					android:inputType="textEmailAddress"
 					android:maxLines="1"
-					android:singleLine="true"
 					android:visibility="gone"/>
 
 			</android.support.design.widget.TextInputLayout>

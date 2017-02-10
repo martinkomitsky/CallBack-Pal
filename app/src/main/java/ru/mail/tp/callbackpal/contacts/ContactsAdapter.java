@@ -28,7 +28,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
 	@Override
 	public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-		View view = LayoutInflater.from(mContext).inflate(R.layout.view_single_contact, null);
+		View view = LayoutInflater.from(mContext).inflate(R.layout.view_single_contact, parent, false);
 
 		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
 			view.setBackgroundResource(R.drawable.ripple);

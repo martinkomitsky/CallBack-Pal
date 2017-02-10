@@ -7,6 +7,7 @@ import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,12 @@ public class ContactsListActivity extends AppCompatActivity {
 		ContactsAdapter contactAdapter = new ContactsAdapter(contactList, getApplicationContext());
 		rvContacts.setLayoutManager(new LinearLayoutManager(this));
 		rvContacts.setAdapter(contactAdapter);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.contacts_menu, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	private List<Contact> getAllContactsList() {

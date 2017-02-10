@@ -53,14 +53,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 	private static final int REQUEST_READ_CONTACTS = 0;
 
 	/**
-	 * A dummy authentication store containing known user names and passwords.
-	 * TODO: remove after connecting to a real authentication system.
-	 */
-//    private static final String[] DUMMY_CREDENTIALS = new String[]{
-	public static final String[] DUMMY_CREDENTIALS = new String[]{
-			"foo@example.com:hello", "bar@example.com:world"
-	};
-	/**
 	 * Keep track of the login task to ensure we can cancel it if requested.
 	 */
 //    private UserLoginTask mAuthTask = null;
@@ -86,7 +78,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 		// Set up the login form.
 		mPhoneView = (MaskedEditText) findViewById(R.id.number_masked);
 		mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-//        populateAutoComplete();
+		populateAutoComplete();
 
 		mPasswordView = (EditText) findViewById(R.id.password);
 		mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -181,11 +173,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 										   @NonNull int[] grantResults) {
 		if (requestCode == REQUEST_READ_CONTACTS) {
 			if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                populateAutoComplete();
+				populateAutoComplete();
 			}
 		}
 	}
-
 
 	/**
 	 * Attempts to sign in or register the account specified by the login form.

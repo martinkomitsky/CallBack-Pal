@@ -19,4 +19,5 @@
 	<string name="retry_validation">Did not receive a call? <u>Retry</u>.</string>
 	<string name="image_avatar_description">Contact avatar</string>
 	<string name="image_logo_description">App logo</string>
+	<string name="action_search">Search</string>
 </resources>

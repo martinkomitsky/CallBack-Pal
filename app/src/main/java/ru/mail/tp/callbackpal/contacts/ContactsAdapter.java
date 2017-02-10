@@ -3,6 +3,7 @@ package ru.mail.tp.callbackpal.contacts;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,13 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 	@Override
 	public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		View view = LayoutInflater.from(mContext).inflate(R.layout.view_single_contact, null);
+
+		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+			view.setBackgroundResource(R.drawable.ripple);
+		} else{
+			view.setBackgroundResource(R.drawable.contact_background);
+		}
+
 		ContactViewHolder contactViewHolder = new ContactViewHolder(view);
 		return contactViewHolder;
 	}

@@ -6,7 +6,6 @@
 
 	android:focusable="true"
 	android:clickable="true"
-	android:background="@drawable/ripple"
 	>
 
 	<LinearLayout

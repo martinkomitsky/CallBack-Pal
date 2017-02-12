@@ -60,8 +60,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
 				Intent intent = new Intent(mContext.getApplicationContext(), CallbackIntentService.class)
 						.setAction(CallbackIntentService.ACTION_INIT_CALLBACK)
-						.putExtra(CallbackIntentService.NUMBER_A, phoneA)
-						.putExtra(CallbackIntentService.NUMBER_B, currentPhone);
+						.putExtra(CallbackIntentService.EXTRA_NUMBER_A, phoneA)
+						.putExtra(CallbackIntentService.EXTRA_NUMBER_B, currentPhone);
 				mContext.startService(intent);
 			}
 
@@ -79,13 +79,13 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 		notifyDataSetChanged();
 	}
 
-	public static class ContactViewHolder extends RecyclerView.ViewHolder{
+	static class ContactViewHolder extends RecyclerView.ViewHolder{
 
-		ImageView ivContactImage;
-		TextView tvContactName;
-		TextView tvPhoneNumber;
+		private ImageView ivContactImage;
+		private TextView tvContactName;
+		private TextView tvPhoneNumber;
 
-		public ContactViewHolder(View itemView) {
+		ContactViewHolder(View itemView) {
 			super(itemView);
 			ivContactImage = (ImageView) itemView.findViewById(R.id.ivContactImage);
 			tvContactName = (TextView) itemView.findViewById(R.id.tvContactName);

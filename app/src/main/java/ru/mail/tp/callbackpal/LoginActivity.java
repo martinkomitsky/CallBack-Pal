@@ -3,12 +3,15 @@ package ru.mail.tp.callbackpal;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -16,7 +19,6 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -40,6 +42,8 @@ import com.github.pinball83.maskededittext.MaskedEditText;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.mail.tp.callbackpal.api.models.ValidationCode;
+
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
@@ -52,13 +56,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 	 */
 	private static final int REQUEST_READ_CONTACTS = 0;
 
-	/**
-	 * Keep track of the login task to ensure we can cancel it if requested.
-	 */
-//    private UserLoginTask mAuthTask = null;
-	public static UserLoginTask mAuthTask = null;
-
-	public String validationPin;
+	public String validationPin = null;
 
 	// UI references.
 	private AutoCompleteTextView mEmailView;
@@ -67,13 +65,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 	private View mProgressView;
 	private View mLoginFormView;
 
+
+	private BroadcastReceiver broadcastReceiver;
+	private IntentFilter intentFilter;
+	private boolean intentAwaiting = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		this.setTitle(getResources().getString(R.string.action_sign_in_short));
 
-		UserLoginTask.updateActivity(this);
 
 		// Set up the login form.
 		mPhoneView = (MaskedEditText) findViewById(R.id.number_masked);
@@ -81,6 +83,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 		populateAutoComplete();
 
 		mPasswordView = (EditText) findViewById(R.id.password);
+
+		Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+		mEmailSignInButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				attemptLogin();
+			}
+		});
+
 		mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -89,14 +100,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 					return true;
 				}
 				return false;
-			}
-		});
-
-		Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-		mEmailSignInButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				attemptLogin();
 			}
 		});
 
@@ -133,6 +136,45 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 		mLoginFormView = findViewById(R.id.login_form);
 		mProgressView = findViewById(R.id.login_progress);
+
+
+		broadcastReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+//				Log.d(LOG_TAG, "REQUEST_VALIDATION_CODE_RESULT intent was received");
+				intentAwaiting = false;
+				showProgress(false);
+				// if success is false - do this
+//				mPasswordView.setError(activity.getString(R.string.error_incorrect_password));
+//				mPasswordView.requestFocus();
+
+				Bundle bundle = intent.getExtras();
+
+				final ValidationCode validationCode = (ValidationCode) bundle.getSerializable(CallbackIntentService.EXTRA_REQUEST_VALIDATION_CODE_RESULT);
+				final String errorMessage = bundle.getString(CallbackIntentService.EXTRA_ERROR_MESSAGE);
+
+				if (validationCode != null) {
+//					Log.d(LOG_TAG, String.format("ValidationCode data: {result:%s, pin:%s}", validationCode.isResult(), validationCode.getPin()));
+					if (validationCode.getResult()) {
+//						Credentials.setCorrectPin(String.valueOf(validationCode.getPin()));
+						validationPin = validationCode.getPin();
+					} else {
+//						Credentials.setCorrectPin(null);
+						validationPin = null;
+						mPasswordView.setError(getString(R.string.error_incorrect_password));
+					}
+				} else if (errorMessage != null && !errorMessage.isEmpty()) {
+//					Log.d(LOG_TAG, String.format("ValidationCode request throws error: %s", errorMessage));
+					mPasswordView.setText(String.format(getString(R.string.error_message), errorMessage));
+				}
+			}
+		};
+//		Log.d(LOG_TAG, "We are creating Local Intent Filter");
+		intentFilter = new IntentFilter(CallbackIntentService.ACTION_REQUEST_VALIDATION_CODE_RESULT);
+		intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+
+		LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);
+
 	}
 
 	private void populateAutoComplete() {
@@ -184,18 +226,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 	 * errors are presented and no actual login attempt is made.
 	 */
 	private void attemptLogin() {
-		if (mAuthTask != null) {
+		if (intentAwaiting) {
 			return;
 		}
 
 		// Reset errors.
 		mPhoneView.setError(null);
-//        mEmailView.setError(null);
-//        mPasswordView.setError(null);
+//		mEmailView.setError(null);
+//		mPasswordView.setError(null);
 
 		String phone = mPhoneView.getUnmaskedText();
-		String email = mEmailView.getText().toString();
-		String password = mPasswordView.getText().toString();
+//		String email = mEmailView.getText().toString();
+//		String password = mPasswordView.getText().toString();
 
 		boolean cancel = false;
 		View focusView = null;
@@ -215,6 +257,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 			focusView.requestFocus();
 		} else {
 			showProgress(true);
+			intentAwaiting = true;
 
 			// TODO: add "if" and move to another fn
 			mPasswordView.setVisibility(View.VISIBLE);
@@ -230,8 +273,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 			Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
 			mEmailSignInButton.setVisibility(View.GONE);
 
-			mAuthTask = new UserLoginTask(email, password, phone);
-			mAuthTask.execute((Void) null);
+			Intent intent = new Intent(this, CallbackIntentService.class)
+					.setAction(CallbackIntentService.ACTION_REQUEST_VALIDATION_CODE)
+					.putExtra(CallbackIntentService.EXTRA_PHONE_NUMBER, String.format("+7%s", phone));
+			startService(intent);
 		}
 	}
 
@@ -348,5 +393,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 		Log.d("SAS", "onRestoreInstanceState");
 	}
 
+	@Override
+	protected void onDestroy() {
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+		super.onDestroy();
+	}
 }
 

@@ -20,4 +20,6 @@
 	<string name="image_avatar_description">Contact avatar</string>
 	<string name="image_logo_description">App logo</string>
 	<string name="action_search">Search</string>
+
+	<string name="error_message">Something went wrong: %s</string>
 </resources>

@@ -1,14 +1,16 @@
 package ru.mail.tp.callbackpal.api.models;
 
+import java.io.Serializable;
+
 /**
  * Created by Martin on 07.01.2017.
  */
 
-public class ValidationCode {
+public class ValidationCode implements Serializable {
 
-	String function;
-	Boolean result;
-	Integer pin;
+	private String function;
+	private Boolean result;
+	private Integer pin;
 
 	void ValidationCode() {
 	}
@@ -19,7 +21,11 @@ public class ValidationCode {
 		this.pin = pin;
 	}
 
-	public String getPin () {
+	public String getPin() {
 		return String.valueOf(this.pin);
+	}
+
+	public boolean getResult() {
+		return result;
 	}
 }

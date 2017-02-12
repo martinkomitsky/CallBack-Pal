@@ -1,13 +1,15 @@
 package ru.mail.tp.callbackpal.api.models;
 
+import java.io.Serializable;
+
 /**
  * Created by Martin on 19.01.2017.
  */
 
-public class CommutateSubscribersResult {
+public class CommutateSubscribersResult implements Serializable {
 
-	String function;
-	Boolean result;
+	private String function;
+	private Boolean result;
 
 	void CommutateSubscribersResult() {
 	}
@@ -15,5 +17,9 @@ public class CommutateSubscribersResult {
 	void CommutateSubscribersResult(String function, Boolean result) {
 		this.function = function;
 		this.result = result;
+	}
+
+	public boolean getResult() {
+		return result;
 	}
 }

@@ -11,10 +11,10 @@ public class CommutateSubscribersResult implements Serializable {
 	private String function;
 	private Boolean result;
 
-	void CommutateSubscribersResult() {
+	CommutateSubscribersResult() {
 	}
 
-	void CommutateSubscribersResult(String function, Boolean result) {
+	CommutateSubscribersResult(String function, Boolean result) {
 		this.function = function;
 		this.result = result;
 	}

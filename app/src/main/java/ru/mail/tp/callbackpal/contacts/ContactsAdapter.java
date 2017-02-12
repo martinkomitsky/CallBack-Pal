@@ -21,7 +21,7 @@ import ru.mail.tp.callbackpal.R;
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>{
 	private List<Contact> contactList;
-	private Context mContext;
+	private final Context mContext;
 	public ContactsAdapter(List<Contact> contactList, Context mContext){
 		this.contactList = contactList;
 		this.mContext = mContext;
@@ -37,8 +37,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 			view.setBackgroundResource(R.drawable.contact_background);
 		}
 
-		ContactViewHolder contactViewHolder = new ContactViewHolder(view);
-		return contactViewHolder;
+		return new ContactViewHolder(view);
 	}
 
 	@Override
@@ -81,9 +80,9 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
 	static class ContactViewHolder extends RecyclerView.ViewHolder{
 
-		private ImageView ivContactImage;
-		private TextView tvContactName;
-		private TextView tvPhoneNumber;
+		private final ImageView ivContactImage;
+		private final TextView tvContactName;
+		private final TextView tvPhoneNumber;
 
 		ContactViewHolder(View itemView) {
 			super(itemView);

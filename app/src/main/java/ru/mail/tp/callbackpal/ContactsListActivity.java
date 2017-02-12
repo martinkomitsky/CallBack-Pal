@@ -21,7 +21,7 @@ import ru.mail.tp.callbackpal.contacts.ContactsAdapter;
 public class ContactsListActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
 
-	RecyclerView rvContacts;
+	private RecyclerView rvContacts;
 	private ContactsAdapter contactAdapter;
 	private List<Contact> contactList;
 

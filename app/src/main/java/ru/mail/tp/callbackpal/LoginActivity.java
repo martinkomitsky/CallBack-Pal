@@ -97,7 +97,7 @@ public class LoginActivity extends AppCompatActivity {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				String enteredPin = s.toString();
 				if (enteredPin.length() == 4) {
-					Log.d(LOG_TAG, "edit" + enteredPin);
+					Log.d(LOG_TAG, "edit: " + enteredPin);
 
 					SharedPreferences pref =  getApplicationContext().getSharedPreferences("ValidationData", MODE_PRIVATE);
 					SharedPreferences.Editor editor = pref.edit();
@@ -111,10 +111,10 @@ public class LoginActivity extends AppCompatActivity {
 
 						Intent startSecondActivity = new Intent(LoginActivity.this, ContactsListActivity.class);
 						LoginActivity.this.startActivity(startSecondActivity);
+						finish();
 
 					} else {
 						mPasswordView.setError(getString(R.string.error_invalid_password));
-
 						editor.putBoolean("phone_validated", false);
 						editor.apply();
 					}
@@ -271,7 +271,7 @@ public class LoginActivity extends AppCompatActivity {
 	 * Shows the progress UI and hides the login form.
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	public void showProgress(final boolean show) {
+	private void showProgress(final boolean show) {
 		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
 		// for very easy animations. If available, use these APIs to fade-in
 		// the progress spinner.

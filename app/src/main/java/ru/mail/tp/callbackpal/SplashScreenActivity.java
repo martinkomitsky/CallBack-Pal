@@ -12,14 +12,14 @@ import android.util.Log;
 import java.lang.ref.WeakReference;
 
 public class SplashScreenActivity extends AppCompatActivity {
-	public boolean isValidated;
+	private boolean isValidated;
 	private boolean backPressed;
 
 
 	private static class DelayedHandler extends Handler {
 		private final WeakReference<SplashScreenActivity> mActivity;
 
-		public DelayedHandler(SplashScreenActivity splashScreenActivity) {
+		private DelayedHandler(SplashScreenActivity splashScreenActivity) {
 			mActivity = new WeakReference<>(splashScreenActivity);
 		}
 

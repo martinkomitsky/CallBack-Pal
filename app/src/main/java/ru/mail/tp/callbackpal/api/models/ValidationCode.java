@@ -12,10 +12,10 @@ public class ValidationCode implements Serializable {
 	private Boolean result;
 	private Integer pin;
 
-	void ValidationCode() {
+	ValidationCode() {
 	}
 
-	void ValidationCode(String function, Boolean result, Integer pin) {
+	ValidationCode(String function, Boolean result, Integer pin) {
 		this.function = function;
 		this.result = result;
 		this.pin = pin;

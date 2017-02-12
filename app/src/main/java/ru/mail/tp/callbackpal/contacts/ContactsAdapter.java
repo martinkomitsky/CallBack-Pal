@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ru.mail.tp.callbackpal.CallbackIntentService;
@@ -42,7 +43,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
 	@Override
 	public void onBindViewHolder(final ContactViewHolder holder, final int position) {
-		final Contact contact= contactList.get(position);
+		final Contact contact = contactList.get(position);
 		holder.tvContactName.setText(contact.getContactName());
 		holder.tvPhoneNumber.setText(contact.getContactNumber());
 
@@ -70,6 +71,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 	@Override
 	public int getItemCount() {
 		return contactList.size();
+	}
+
+	public void setFilter(List<Contact> contactListFiltered){
+		contactList = new ArrayList<>();
+		contactList.addAll(contactListFiltered);
+		notifyDataSetChanged();
 	}
 
 	public static class ContactViewHolder extends RecyclerView.ViewHolder{

@@ -4,10 +4,13 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +18,12 @@ import java.util.List;
 import ru.mail.tp.callbackpal.contacts.Contact;
 import ru.mail.tp.callbackpal.contacts.ContactsAdapter;
 
-public class ContactsListActivity extends AppCompatActivity {
+public class ContactsListActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
 
 	RecyclerView rvContacts;
+	private ContactsAdapter contactAdapter;
+	private List<Contact> contactList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +31,10 @@ public class ContactsListActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_contacts_list);
 
 		List<Contact> contactList = getAllContactsList();
+		this.contactList = contactList;
 		rvContacts = (RecyclerView) findViewById(R.id.rvContacts);
 		ContactsAdapter contactAdapter = new ContactsAdapter(contactList, getApplicationContext());
+		this.contactAdapter = contactAdapter;
 		rvContacts.setLayoutManager(new LinearLayoutManager(this));
 		rvContacts.setAdapter(contactAdapter);
 	}
@@ -35,6 +42,27 @@ public class ContactsListActivity extends AppCompatActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.contacts_menu, menu);
+
+		final MenuItem item = menu.findItem(R.id.action_search);
+		final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+		searchView.setOnQueryTextListener(this);
+
+		MenuItemCompat.setOnActionExpandListener(item,
+				new MenuItemCompat.OnActionExpandListener() {
+					@Override
+					public boolean onMenuItemActionCollapse(MenuItem item) {
+						// Do something when collapsed
+						contactAdapter.setFilter(contactList);
+						return true; // Return true to collapse action view
+					}
+
+					@Override
+					public boolean onMenuItemActionExpand(MenuItem item) {
+						// Do something when expanded
+						return true; // Return true to expand action view
+					}
+				});
+
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -81,5 +109,30 @@ public class ContactsListActivity extends AppCompatActivity {
 			}
 		}
 		return contactList;
+	}
+
+	@Override
+	public boolean onQueryTextSubmit(String query) {
+		return false;
+	}
+
+	@Override
+	public boolean onQueryTextChange(String newText) {
+		final List<Contact> filteredModelList = filter(contactList, newText);
+		contactAdapter.setFilter(filteredModelList);
+		return true;
+	}
+
+	private List<Contact> filter(List<Contact> models, String query) {
+		query = query.toLowerCase();
+
+		final List<Contact> filteredModelList = new ArrayList<>();
+		for (Contact model : models) {
+			final String text = model.getContactName().toLowerCase();
+			if (text.contains(query)) {
+				filteredModelList.add(model);
+			}
+		}
+		return filteredModelList;
 	}
 }

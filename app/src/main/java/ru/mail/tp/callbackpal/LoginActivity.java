@@ -49,7 +49,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity {
 
 	/**
 	 * Id to identity READ_CONTACTS permission request.
@@ -74,15 +74,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		this.setTitle(getResources().getString(R.string.action_sign_in_short));
 
+		mayRequestContacts();
+		this.setTitle(getResources().getString(R.string.action_sign_in_short));
 
 		// Set up the login form.
 		mPhoneView = (MaskedEditText) findViewById(R.id.number_masked);
 		mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-		populateAutoComplete();
-
 		mPasswordView = (EditText) findViewById(R.id.password);
+		mLoginFormView = findViewById(R.id.login_form);
+		mProgressView = findViewById(R.id.login_progress);
 
 		Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
 		mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -134,10 +135,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 			}
 		});
 
-		mLoginFormView = findViewById(R.id.login_form);
-		mProgressView = findViewById(R.id.login_progress);
-
-
 		broadcastReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
@@ -177,14 +174,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 	}
 
-	private void populateAutoComplete() {
-		if (!mayRequestContacts()) {
-			return;
-		}
-
-		getLoaderManager().initLoader(0, null, this);
-	}
-
 	private boolean mayRequestContacts() {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
 			return true;
@@ -215,7 +204,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 										   @NonNull int[] grantResults) {
 		if (requestCode == REQUEST_READ_CONTACTS) {
 			if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-				populateAutoComplete();
+				Log.d("Permission", "Granted");
 			}
 		}
 	}
@@ -328,60 +317,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 		}
 	}
 
-	@Override
-	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-		return new CursorLoader(this,
-				// Retrieve data rows for the device user's 'profile' contact.
-				Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
-						ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
-
-				// Select only email addresses.
-				ContactsContract.Contacts.Data.MIMETYPE +
-						" = ?", new String[]{ContactsContract.CommonDataKinds.Email
-				.CONTENT_ITEM_TYPE},
-
-				// Show primary email addresses first. Note that there won't be
-				// a primary email address if the user hasn't specified one.
-				ContactsContract.Contacts.Data.IS_PRIMARY + " DESC");
-	}
-
-	@Override
-	public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-		List<String> emails = new ArrayList<>();
-		cursor.moveToFirst();
-		while (!cursor.isAfterLast()) {
-			emails.add(cursor.getString(ProfileQuery.ADDRESS));
-			cursor.moveToNext();
-		}
-
-		addEmailsToAutoComplete(emails);
-	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
-	}
-
-	private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
-		//Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
-		ArrayAdapter<String> adapter =
-				new ArrayAdapter<>(LoginActivity.this,
-						android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
-
-		mEmailView.setAdapter(adapter);
-	}
-
-
-	private interface ProfileQuery {
-		String[] PROJECTION = {
-				ContactsContract.CommonDataKinds.Email.ADDRESS,
-				ContactsContract.CommonDataKinds.Email.IS_PRIMARY,
-		};
-
-		int ADDRESS = 0;
-		int IS_PRIMARY = 1;
-	}
-
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		Log.d("SAS", "onSaveInstanceState");
@@ -399,4 +334,3 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 		super.onDestroy();
 	}
 }
-

@@ -13,16 +13,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -31,16 +23,12 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.github.pinball83.maskededittext.MaskedEditText;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import ru.mail.tp.callbackpal.api.models.ValidationCode;
 
@@ -55,19 +43,18 @@ public class LoginActivity extends AppCompatActivity {
 	 * Id to identity READ_CONTACTS permission request.
 	 */
 	private static final int REQUEST_READ_CONTACTS = 0;
+	private static final String LOG_TAG = "[LoginActivity]";
 
-	public String validationPin = null;
+	private String validationPin = null;
 
 	// UI references.
 	private AutoCompleteTextView mEmailView;
 	private MaskedEditText mPhoneView;
-	public EditText mPasswordView;
+	private EditText mPasswordView;
 	private View mProgressView;
 	private View mLoginFormView;
 
-
 	private BroadcastReceiver broadcastReceiver;
-	private IntentFilter intentFilter;
 	private boolean intentAwaiting = false;
 
 	@Override
@@ -110,13 +97,13 @@ public class LoginActivity extends AppCompatActivity {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				String enteredPin = s.toString();
 				if (enteredPin.length() == 4) {
-					Log.d("edit", enteredPin);
+					Log.d(LOG_TAG, "edit" + enteredPin);
 
 					SharedPreferences pref =  getApplicationContext().getSharedPreferences("ValidationData", MODE_PRIVATE);
 					SharedPreferences.Editor editor = pref.edit();
 
 					if (isPasswordValid(enteredPin)) {
-						Log.d("edit", "success!!!");
+						Log.d(LOG_TAG, "Phone validation success!");
 
 						editor.putBoolean("phone_validated", true);
 						editor.putString("phone", "+7" + mPhoneView.getUnmaskedText());
@@ -138,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
 		broadcastReceiver = new BroadcastReceiver() {
 			@Override
 			public void onReceive(Context context, Intent intent) {
-//				Log.d(LOG_TAG, "REQUEST_VALIDATION_CODE_RESULT intent was received");
+				Log.d(LOG_TAG, "REQUEST_VALIDATION_CODE_RESULT intent was received");
 				intentAwaiting = false;
 				showProgress(false);
 				// if success is false - do this
@@ -151,27 +138,26 @@ public class LoginActivity extends AppCompatActivity {
 				final String errorMessage = bundle.getString(CallbackIntentService.EXTRA_ERROR_MESSAGE);
 
 				if (validationCode != null) {
-//					Log.d(LOG_TAG, String.format("ValidationCode data: {result:%s, pin:%s}", validationCode.isResult(), validationCode.getPin()));
+					Log.d(LOG_TAG, String.format("ValidationCode data: {result:%s, pin:%s}", validationCode.getResult(), validationCode.getPin()));
 					if (validationCode.getResult()) {
-//						Credentials.setCorrectPin(String.valueOf(validationCode.getPin()));
 						validationPin = validationCode.getPin();
 					} else {
-//						Credentials.setCorrectPin(null);
 						validationPin = null;
 						mPasswordView.setError(getString(R.string.error_incorrect_password));
 					}
 				} else if (errorMessage != null && !errorMessage.isEmpty()) {
-//					Log.d(LOG_TAG, String.format("ValidationCode request throws error: %s", errorMessage));
+					Log.d(LOG_TAG, String.format("An error occurred: %s", errorMessage));
+
+					// TODO: change this setText to another textView
 					mPasswordView.setText(String.format(getString(R.string.error_message), errorMessage));
 				}
 			}
 		};
-//		Log.d(LOG_TAG, "We are creating Local Intent Filter");
-		intentFilter = new IntentFilter(CallbackIntentService.ACTION_REQUEST_VALIDATION_CODE_RESULT);
+
+		Log.d(LOG_TAG, "Creating Local Intent Filter");
+		IntentFilter intentFilter = new IntentFilter(CallbackIntentService.ACTION_REQUEST_VALIDATION_CODE_RESULT);
 		intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-
 		LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);
-
 	}
 
 	private boolean mayRequestContacts() {
@@ -204,7 +190,7 @@ public class LoginActivity extends AppCompatActivity {
 										   @NonNull int[] grantResults) {
 		if (requestCode == REQUEST_READ_CONTACTS) {
 			if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-				Log.d("Permission", "Granted");
+				Log.d(LOG_TAG, "Permission Granted");
 			}
 		}
 	}
@@ -319,13 +305,13 @@ public class LoginActivity extends AppCompatActivity {
 
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		Log.d("SAS", "onSaveInstanceState");
+		Log.d(LOG_TAG, "onSaveInstanceState");
 	}
 
 
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-		Log.d("SAS", "onRestoreInstanceState");
+		Log.d(LOG_TAG, "onRestoreInstanceState");
 	}
 
 	@Override

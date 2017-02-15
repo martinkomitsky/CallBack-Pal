@@ -12,6 +12,8 @@ import android.util.Log;
 import java.lang.ref.WeakReference;
 
 public class SplashScreenActivity extends AppCompatActivity {
+	private static final String LOG_TAG = "[SplashScreenActivity]";
+
 	private boolean isValidated;
 	private boolean backPressed;
 
@@ -29,11 +31,11 @@ public class SplashScreenActivity extends AppCompatActivity {
 			if (activity != null) {
 				if (!activity.backPressed) {
 					if (activity.isValidated) {
-						Log.d("Phone is", "validated");
+						Log.d(LOG_TAG, "Phone is validated");
 						Intent startSecondActivity = new Intent(activity, ContactsListActivity.class);
 						activity.startActivity(startSecondActivity);
 					} else {
-						Log.d("Phone is", "not validated");
+						Log.d(LOG_TAG, "Phone is not validated");
 						Intent startSecondActivity = new Intent(activity, LoginActivity.class);
 						activity.startActivity(startSecondActivity);
 					}

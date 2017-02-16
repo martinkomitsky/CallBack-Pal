@@ -46,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
 	private static final String LOG_TAG = "[LoginActivity]";
 
 	private String validationPin = null;
+	private String currentPhone;
 
 	// UI references.
 	private AutoCompleteTextView mEmailView;
@@ -71,12 +72,20 @@ public class LoginActivity extends AppCompatActivity {
 		mPasswordView = (EditText) findViewById(R.id.password);
 		mLoginFormView = findViewById(R.id.login_form);
 		mProgressView = findViewById(R.id.login_progress);
+		View mRetryView = findViewById(R.id.retry_validation);
 
 		Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
 		mEmailSignInButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				attemptLogin();
+			}
+		});
+
+		mRetryView.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				requestValidationCall(currentPhone);
 			}
 		});
 
@@ -211,6 +220,7 @@ public class LoginActivity extends AppCompatActivity {
 //		mPasswordView.setError(null);
 
 		String phone = mPhoneView.getUnmaskedText();
+		this.currentPhone = phone;
 //		String email = mEmailView.getText().toString();
 //		String password = mPasswordView.getText().toString();
 
@@ -248,10 +258,7 @@ public class LoginActivity extends AppCompatActivity {
 			Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
 			mEmailSignInButton.setVisibility(View.GONE);
 
-			Intent intent = new Intent(this, CallbackIntentService.class)
-					.setAction(CallbackIntentService.ACTION_REQUEST_VALIDATION_CODE)
-					.putExtra(CallbackIntentService.EXTRA_PHONE_NUMBER, String.format("+7%s", phone));
-			startService(intent);
+			requestValidationCall(phone);
 		}
 	}
 
@@ -265,6 +272,15 @@ public class LoginActivity extends AppCompatActivity {
 
 	private boolean isPasswordValid(String password) {
 		return password.length() == 4 && password.equals(validationPin);
+	}
+
+	private void requestValidationCall (String phone) {
+		if (phone != null && phone.length() > 0) {
+			Intent intent = new Intent(getApplicationContext(), CallbackIntentService.class)
+					.setAction(CallbackIntentService.ACTION_REQUEST_VALIDATION_CODE)
+					.putExtra(CallbackIntentService.EXTRA_PHONE_NUMBER, String.format("+7%s", phone));
+			startService(intent);
+		}
 	}
 
 	/**

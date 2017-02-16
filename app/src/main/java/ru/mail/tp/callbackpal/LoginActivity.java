@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
@@ -74,6 +75,9 @@ public class LoginActivity extends AppCompatActivity {
 		mProgressView = findViewById(R.id.login_progress);
 		View mRetryView = findViewById(R.id.retry_validation);
 
+		final TextView mTimerView = (TextView) findViewById(R.id.timer_view);
+
+
 		Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
 		mEmailSignInButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -82,10 +86,31 @@ public class LoginActivity extends AppCompatActivity {
 			}
 		});
 
+
 		mRetryView.setOnClickListener(new OnClickListener() {
+			private Boolean permission = true;
+
 			@Override
 			public void onClick(View v) {
-				requestValidationCall(currentPhone);
+				if (permission) {
+					requestValidationCall(currentPhone);
+					permission = false;
+
+					new CountDownTimer(30000, 1000) {
+
+						public void onTick(long millisUntilFinished) {
+							mTimerView.setVisibility(View.VISIBLE);
+							mTimerView.setText(String.format(getString(R.string.timer), millisUntilFinished / 1000));
+
+						}
+
+						public void onFinish() {
+							mTimerView.setText("");
+							permission = true;
+							mTimerView.setVisibility(View.GONE);
+						}
+					}.start();
+				}
 			}
 		});
 

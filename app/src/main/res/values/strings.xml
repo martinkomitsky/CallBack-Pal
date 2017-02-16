@@ -22,4 +22,6 @@
 	<string name="action_search">Search</string>
 
 	<string name="error_message">Something went wrong: %s</string>
+
+	<string name="timer">Seconds remaining: %s</string>
 </resources>

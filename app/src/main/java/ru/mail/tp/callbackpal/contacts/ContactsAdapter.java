@@ -33,7 +33,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
 		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
 			view.setBackgroundResource(R.drawable.ripple);
-		} else{
+		} else {
 			view.setBackgroundResource(R.drawable.contact_background);
 		}
 

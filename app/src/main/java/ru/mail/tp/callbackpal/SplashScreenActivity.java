@@ -34,10 +34,12 @@ public class SplashScreenActivity extends AppCompatActivity {
 						Log.d(LOG_TAG, "Phone is validated");
 						Intent startSecondActivity = new Intent(activity, ContactsListActivity.class);
 						activity.startActivity(startSecondActivity);
+						activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 					} else {
 						Log.d(LOG_TAG, "Phone is not validated");
 						Intent startSecondActivity = new Intent(activity, LoginActivity.class);
 						activity.startActivity(startSecondActivity);
+						activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 					}
 					activity.finish();
 				}

@@ -58,9 +58,9 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 				String phoneA = pref.getString("phone", null);
 
 				Intent intent = new Intent(mContext.getApplicationContext(), CallbackIntentService.class)
-						.setAction(CallbackIntentService.ACTION_INIT_CALLBACK)
-						.putExtra(CallbackIntentService.EXTRA_NUMBER_A, phoneA)
-						.putExtra(CallbackIntentService.EXTRA_NUMBER_B, currentPhone);
+					.setAction(CallbackIntentService.ACTION_INIT_CALLBACK)
+					.putExtra(CallbackIntentService.EXTRA_NUMBER_A, phoneA)
+					.putExtra(CallbackIntentService.EXTRA_NUMBER_B, currentPhone);
 				mContext.startService(intent);
 			}
 

@@ -71,7 +71,6 @@ public class LoginActivity extends AppCompatActivity {
 
 		// Set up the login form.
 		mPhoneView = (MaskedEditText) findViewById(R.id.number_masked);
-		mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
 		mPasswordView = (EditText) findViewById(R.id.password);
 		mLoginFormView = findViewById(R.id.login_form);
 		mProgressView = findViewById(R.id.login_progress);
@@ -163,10 +162,6 @@ public class LoginActivity extends AppCompatActivity {
 				Log.d(LOG_TAG, "REQUEST_VALIDATION_CODE_RESULT intent was received");
 				intentAwaiting = false;
 				showProgress(false);
-				// if success is false - do this
-//				mPasswordView.setError(activity.getString(R.string.error_incorrect_password));
-//				mPasswordView.requestFocus();
-
 				Bundle bundle = intent.getExtras();
 
 				final ValidationCode validationCode = (ValidationCode) bundle.getSerializable(CallbackIntentService.EXTRA_REQUEST_VALIDATION_CODE_RESULT);
@@ -242,13 +237,8 @@ public class LoginActivity extends AppCompatActivity {
 
 		// Reset errors.
 		mPhoneView.setError(null);
-//		mEmailView.setError(null);
-//		mPasswordView.setError(null);
-
 		String phone = mPhoneView.getUnmaskedText();
 		this.currentPhone = phone;
-//		String email = mEmailView.getText().toString();
-//		String password = mPasswordView.getText().toString();
 
 		boolean cancel = false;
 		View focusView = null;
@@ -290,10 +280,6 @@ public class LoginActivity extends AppCompatActivity {
 
 	private boolean isPhoneValid(String phone) {
 		return phone.length() == 10;
-	}
-
-	private boolean isEmailValid(String email) {
-		return email.contains("@");
 	}
 
 	private boolean isPasswordValid(String password) {

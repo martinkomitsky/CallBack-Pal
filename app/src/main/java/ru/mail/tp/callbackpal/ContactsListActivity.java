@@ -58,7 +58,8 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 		new CountDownTimer(15000, 1000) {
 
 			public void onTick(long millisUntilFinished) {
-				mDialogText.setText(String.format(getString(R.string.info_next_call), millisUntilFinished / 1000));
+				int count =  (int) millisUntilFinished / 1000;
+				mDialogText.setText(getResources().getQuantityString(R.plurals.info_next_call_plural, count, count));
 			}
 
 			public void onFinish() {
@@ -186,6 +187,8 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 		this.contactAdapter = contactAdapter;
 		rvContacts.setLayoutManager(new LinearLayoutManager(this));
 		rvContacts.setAdapter(contactAdapter);
+
+		//TODO: show preloader until loaded
 	}
 
 	@Override

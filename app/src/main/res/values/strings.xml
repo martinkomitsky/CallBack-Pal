@@ -24,10 +24,15 @@
 
 	<string name="error_message">Something went wrong: %s</string>
 
-	<string name="timer">Seconds remaining: %s</string>
+	<string name="timer">Seconds remaining: %d</string>
 
-	<string name="info_next_call">Next call will be available in %s seconds.</string>
-	<string name="info_dial">Dial in progress...</string>
+	<string name="info_next_call">Next call will be available in one second.</string>
+	<plurals name="info_next_call_plural">
+		<item quantity="one">Next call will be available in one second.</item>
+		<item quantity="other">Next call will be available in %d seconds.</item>
+	</plurals>
+
+	<string name="info_dial">Dial in progress…</string>
 
 	<string name="unknown_error">An error occurred</string>
 </resources>

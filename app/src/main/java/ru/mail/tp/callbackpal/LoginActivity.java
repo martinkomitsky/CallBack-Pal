@@ -64,7 +64,9 @@ public class LoginActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 
-		mayRequestContacts();
+		if (mayRequestContacts()) {
+			Log.d(LOG_TAG, "May request contacts");
+		}
 		this.setTitle(getResources().getString(R.string.action_sign_in_short));
 
 		// Set up the login form.
@@ -97,7 +99,6 @@ public class LoginActivity extends AppCompatActivity {
 					permission = false;
 
 					new CountDownTimer(30000, 1000) {
-
 						public void onTick(long millisUntilFinished) {
 							mTimerView.setVisibility(View.VISIBLE);
 							mTimerView.setText(String.format(getString(R.string.timer), millisUntilFinished / 1000));

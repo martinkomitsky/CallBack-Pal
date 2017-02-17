@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.mail.tp.callbackpal.CallbackIntentService;
-import ru.mail.tp.callbackpal.ContactsListActivity;
 import ru.mail.tp.callbackpal.R;
 
 

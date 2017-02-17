@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +18,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.mail.tp.callbackpal.CallbackIntentService;
+import ru.mail.tp.callbackpal.ContactsListActivity;
 import ru.mail.tp.callbackpal.R;
 
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>{
 	private List<Contact> contactList;
 	private final Context mContext;
+
+	public void callBackFN(){}
+
+		private static final String LOG_TAG = "[ContactsAdapter]";
+
 	public ContactsAdapter(List<Contact> contactList, Context mContext){
 		this.contactList = contactList;
 		this.mContext = mContext;
@@ -33,7 +41,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
 		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
 			view.setBackgroundResource(R.drawable.ripple);
-		} else{
+		} else {
 			view.setBackgroundResource(R.drawable.contact_background);
 		}
 
@@ -50,18 +58,26 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
 			@Override
 			public void onClick(View v) {
-				String currentPhone = holder.tvPhoneNumber.getText().toString().replaceAll("[^0-9+]", "");
-				Toast.makeText(mContext, currentPhone, Toast.LENGTH_LONG).show();
+			String currentPhone = holder.tvPhoneNumber.getText().toString().replaceAll("[^0-9+]", "");
+			SharedPreferences pref = mContext.getApplicationContext().getSharedPreferences("ValidationData", 0);
+			String phoneA = pref.getString("phone", null);
 
-				SharedPreferences pref = mContext.getApplicationContext().getSharedPreferences("ValidationData", 0);
 
-				String phoneA = pref.getString("phone", null);
+			if (phoneA != null && phoneA.length() > 0 && currentPhone != null && currentPhone.length() > 0) {
+
+				Toast.makeText(mContext, String.format(mContext.getString(R.string.action_calling_number), currentPhone), Toast.LENGTH_LONG).show();
 
 				Intent intent = new Intent(mContext.getApplicationContext(), CallbackIntentService.class)
-					.setAction(CallbackIntentService.ACTION_INIT_CALLBACK)
-					.putExtra(CallbackIntentService.EXTRA_NUMBER_A, phoneA)
-					.putExtra(CallbackIntentService.EXTRA_NUMBER_B, currentPhone);
+						.setAction(CallbackIntentService.ACTION_INIT_CALLBACK)
+						.putExtra(CallbackIntentService.EXTRA_NUMBER_A, phoneA)
+						.putExtra(CallbackIntentService.EXTRA_NUMBER_B, currentPhone);
 				mContext.startService(intent);
+
+				callBackFN();
+			} else {
+				Toast.makeText(mContext, mContext.getString(R.string.unknown_error), Toast.LENGTH_LONG).show();
+				Log.d(LOG_TAG, "One of the numbers is blank");
+			}
 			}
 
 		});

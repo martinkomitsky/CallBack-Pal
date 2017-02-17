@@ -5,6 +5,7 @@
 	<string name="prompt_phone">Telephone number</string>
 	<string name="prompt_email">Email</string>
 	<string name="prompt_password">Code</string>
+	<string name="action_calling_number">Dialing %s </string>
 	<string name="action_sign_in_short">Sign in</string>
 	<string name="action_validate_phone">Validate phone</string>
 	<string name="error_invalid_email">This email address is invalid</string>
@@ -22,4 +23,11 @@
 	<string name="action_search">Search</string>
 
 	<string name="error_message">Something went wrong: %s</string>
+
+	<string name="timer">Seconds remaining: %s</string>
+
+	<string name="info_next_call">Next call will be available in %s seconds.</string>
+	<string name="info_dial">Dial in progress...</string>
+
+	<string name="unknown_error">An error occurred</string>
 </resources>

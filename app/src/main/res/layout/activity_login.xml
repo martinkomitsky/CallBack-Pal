@@ -127,6 +127,15 @@
 				android:textColor="@drawable/text_view_color"
 				android:clickable="true" />
 
+			<TextView
+				android:id="@+id/timer_view"
+				android:text="@string/timer"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textColor="@color/red"
+				android:visibility="gone"
+				/>
+
 		</LinearLayout>
 	</ScrollView>
 </LinearLayout>

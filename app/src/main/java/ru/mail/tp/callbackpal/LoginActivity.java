@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -32,6 +33,8 @@ import android.widget.TextView;
 import com.github.pinball83.maskededittext.MaskedEditText;
 
 import ru.mail.tp.callbackpal.api.models.ValidationCode;
+import ru.mail.tp.callbackpal.networkState.NetworkChangeReceiver;
+import ru.mail.tp.callbackpal.networkState.NetworkStateChangeListener;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -45,6 +48,9 @@ public class LoginActivity extends AppCompatActivity {
 	 */
 	private static final int REQUEST_READ_CONTACTS = 0;
 	private static final String LOG_TAG = "[LoginActivity]";
+
+	private final String ACTION_CONN_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
+	private final String ACTION_WIFI_CHANGE = "android.net.wifi.WIFI_STATE_CHANGED";
 
 	private String validationPin = null;
 	private String currentPhone;
@@ -63,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
 	private ActionBar mActionBar;
 
 	private BroadcastReceiver broadcastReceiver;
+	private BroadcastReceiver networkChangedBroadcastReceiver;
 	private boolean intentAwaiting = false;
 
 	@Override
@@ -122,6 +129,12 @@ public class LoginActivity extends AppCompatActivity {
 		IntentFilter intentFilter = new IntentFilter(CallbackIntentService.ACTION_REQUEST_VALIDATION_CODE_RESULT);
 		intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
 		LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);
+
+		networkChangedBroadcastReceiver = new NetworkChangeReceiver(new CallbackRunner());
+		IntentFilter networkChangedFilter = new IntentFilter(ACTION_CONN_CHANGE);
+		networkChangedFilter.addAction(ACTION_WIFI_CHANGE);
+		networkChangedFilter.addCategory(Intent.CATEGORY_DEFAULT);
+		registerReceiver(networkChangedBroadcastReceiver, networkChangedFilter);
 	}
 
 	private void bindEventListeners () {
@@ -129,9 +142,6 @@ public class LoginActivity extends AppCompatActivity {
 			@Override
 			public void onClick(View view) {
 				attemptLogin();
-				if (mActionBar != null) {
-					mActionBar.setDisplayHomeAsUpEnabled(true);
-				}
 			}
 		});
 
@@ -282,6 +292,9 @@ public class LoginActivity extends AppCompatActivity {
 			} else {
 				showProgress(true);
 				showSecondStep(true);
+				if (mActionBar != null) {
+					mActionBar.setDisplayHomeAsUpEnabled(true);
+				}
 				intentAwaiting = true;
 				requestValidationCall(currentPhone);
 			}
@@ -322,6 +335,23 @@ public class LoginActivity extends AppCompatActivity {
 				.putExtra(CallbackIntentService.EXTRA_PHONE_NUMBER, String.format("+7%s", phone));
 			startService(intent);
 		}
+	}
+
+	private void showSnack(String message, boolean isConnected) {
+		int color;
+		if (isConnected) {
+			color = Color.WHITE;
+		} else {
+			color = Color.RED;
+		}
+
+		Snackbar snackbar = Snackbar
+			.make(findViewById(R.id.email_login_form), message, isConnected ? Snackbar.LENGTH_LONG : Snackbar.LENGTH_INDEFINITE);
+
+		View sbView = snackbar.getView();
+		TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+		textView.setTextColor(color);
+		snackbar.show();
 	}
 
 	/**
@@ -373,6 +403,16 @@ public class LoginActivity extends AppCompatActivity {
 	@Override
 	protected void onDestroy() {
 		LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(networkChangedBroadcastReceiver);
 		super.onDestroy();
+	}
+
+	public class CallbackRunner implements NetworkStateChangeListener {
+
+		@Override
+		public void onNetworkStateChange(String message, boolean state) {
+			Log.d(LOG_TAG, message);
+			showSnack(message, state);
+		}
 	}
 }

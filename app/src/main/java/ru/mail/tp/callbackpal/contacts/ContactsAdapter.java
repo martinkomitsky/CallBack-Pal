@@ -25,6 +25,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 	private final Context mContext;
 
 	public void callBackFN(){}
+	public boolean getNetworkState(){ return false;}
 
 		private static final String LOG_TAG = "[ContactsAdapter]";
 
@@ -61,7 +62,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 			String phoneA = pref.getString("phone", null);
 
 
-			if (phoneA != null && phoneA.length() > 0 && currentPhone != null && currentPhone.length() > 0) {
+			if (phoneA != null && phoneA.length() > 0 && currentPhone != null && currentPhone.length() > 0 && getNetworkState()) {
 
 				Toast.makeText(mContext, String.format(mContext.getString(R.string.action_calling_number), currentPhone), Toast.LENGTH_LONG).show();
 

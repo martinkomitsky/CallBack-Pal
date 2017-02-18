@@ -44,4 +44,17 @@ public class NetworkUtil {
 		}
 		return status;
 	}
+
+	static boolean getConnectivityStatusBoolean(Context context) {
+		int conn = NetworkUtil.getConnectivityStatus(context);
+		boolean status = false;
+		if (conn == NetworkUtil.TYPE_WIFI) {
+			status = true;
+		} else if (conn == NetworkUtil.TYPE_MOBILE) {
+			status = true;
+		} else if (conn == NetworkUtil.TYPE_NOT_CONNECTED) {
+			status = false;
+		}
+		return status;
+	}
 }

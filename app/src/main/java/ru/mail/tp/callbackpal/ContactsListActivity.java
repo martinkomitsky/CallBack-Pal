@@ -2,18 +2,25 @@ package ru.mail.tp.callbackpal;
 
 import android.app.LoaderManager;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.ContactsContract;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -22,13 +29,21 @@ import java.util.List;
 
 import ru.mail.tp.callbackpal.contacts.Contact;
 import ru.mail.tp.callbackpal.contacts.ContactsAdapter;
+import ru.mail.tp.callbackpal.networkState.NetworkChangeReceiver;
+import ru.mail.tp.callbackpal.networkState.NetworkStateChangeListener;
+
+import android.view.View;
 import android.widget.TextView;
 
 public class ContactsListActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor> {
 	private RecyclerView rvContacts;
 	private ContactsAdapter contactAdapter;
 	private List<Contact> contactList;
+	private BroadcastReceiver networkChangedBroadcastReceiver;
+	private final String ACTION_CONN_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
+	private final String ACTION_WIFI_CHANGE = "android.net.wifi.WIFI_STATE_CHANGED";
 
+	private boolean networkState = false;
 
 	private static final String[] PROJECTION = {
 			ContactsContract.Data._ID,
@@ -43,6 +58,12 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 
 		rvContacts = (RecyclerView) findViewById(R.id.rvContacts);
 		getLoaderManager().initLoader(0, null, this);
+
+		networkChangedBroadcastReceiver = new NetworkChangeReceiver(new CallbackRunner());
+		IntentFilter networkChangedFilter = new IntentFilter(ACTION_CONN_CHANGE);
+		networkChangedFilter.addAction(ACTION_WIFI_CHANGE);
+		networkChangedFilter.addCategory(Intent.CATEGORY_DEFAULT);
+		registerReceiver(networkChangedBroadcastReceiver, networkChangedFilter);
 	}
 
 	private void showTimerDialog() {
@@ -183,6 +204,11 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 			public void callBackFN(){
 				showTimerDialog();
 			}
+
+			@Override
+			public boolean getNetworkState() {
+				return networkState;
+			}
 		};
 		this.contactAdapter = contactAdapter;
 		rvContacts.setLayoutManager(new LinearLayoutManager(this));
@@ -194,5 +220,36 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 
+	}
+
+	private void showSnack(String message, boolean isConnected) {
+		int color;
+		if (isConnected) {
+			color = Color.WHITE;
+		} else {
+			color = Color.RED;
+		}
+
+		Snackbar snackbar = Snackbar
+				.make(findViewById(R.id.rvContacts), message, isConnected ? Snackbar.LENGTH_LONG : Snackbar.LENGTH_INDEFINITE);
+
+		View sbView = snackbar.getView();
+		TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+		textView.setTextColor(color);
+		snackbar.show();
+	}
+
+	public class CallbackRunner implements NetworkStateChangeListener {
+		@Override
+		public void onNetworkStateChange(String message, boolean state) {
+			networkState = state;
+			showSnack(message, state);
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(networkChangedBroadcastReceiver);
+		super.onDestroy();
 	}
 }

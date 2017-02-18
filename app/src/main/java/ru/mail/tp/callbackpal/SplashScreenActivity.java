@@ -62,7 +62,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
 		SharedPreferences pref = getApplicationContext().getSharedPreferences("ValidationData", MODE_PRIVATE);
 		isValidated = pref.getBoolean("phone_validated", false);
-		mHandler.sendMessageDelayed(new Message(), 1500);
+		mHandler.sendMessageDelayed(new Message(), 1000);
 	}
 
 	@Override

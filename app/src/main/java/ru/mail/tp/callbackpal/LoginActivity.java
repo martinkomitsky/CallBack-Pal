@@ -13,6 +13,7 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,11 +22,10 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -36,7 +36,7 @@ import ru.mail.tp.callbackpal.api.models.ValidationCode;
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers login via validated phone.
  */
 public class LoginActivity extends AppCompatActivity {
 
@@ -50,11 +50,16 @@ public class LoginActivity extends AppCompatActivity {
 	private String currentPhone;
 
 	// UI references.
-	private AutoCompleteTextView mEmailView;
 	private MaskedEditText mPhoneView;
 	private EditText mPasswordView;
+	private TextView mTimerView;
 	private View mProgressView;
 	private View mLoginFormView;
+	private View mCallbackCaption;
+	private View mRetryView;
+	private View mSignInButton;
+
+	private ActionBar mActionBar;
 
 	private BroadcastReceiver broadcastReceiver;
 	private boolean intentAwaiting = false;
@@ -74,19 +79,58 @@ public class LoginActivity extends AppCompatActivity {
 		mPasswordView = (EditText) findViewById(R.id.password);
 		mLoginFormView = findViewById(R.id.login_form);
 		mProgressView = findViewById(R.id.login_progress);
-		View mRetryView = findViewById(R.id.retry_validation);
+		mRetryView = findViewById(R.id.retry_validation);
+		mCallbackCaption = findViewById(R.id.callback_caption);
+		mSignInButton = findViewById(R.id.sign_in_button);
+		mTimerView = (TextView) findViewById(R.id.timer_view);
+		mActionBar = getSupportActionBar();
 
-		final TextView mTimerView = (TextView) findViewById(R.id.timer_view);
+		bindEventListeners();
 
+		broadcastReceiver = new BroadcastReceiver() {
+			@Override
+			public void onReceive(Context context, Intent intent) {
+			Log.d(LOG_TAG, "REQUEST_VALIDATION_CODE_RESULT intent was received");
+			intentAwaiting = false;
+			showProgress(false);
+			Bundle bundle = intent.getExtras();
 
-		Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-		mEmailSignInButton.setOnClickListener(new OnClickListener() {
+			final ValidationCode validationCode = (ValidationCode) bundle.getSerializable(CallbackIntentService.EXTRA_REQUEST_VALIDATION_CODE_RESULT);
+			final String errorMessage = bundle.getString(CallbackIntentService.EXTRA_ERROR_MESSAGE);
+
+			if (validationCode != null) {
+				Log.d(LOG_TAG, String.format("ValidationCode data: {result:%s, pin:%s}", validationCode.getResult(), validationCode.getPin()));
+				if (validationCode.getResult()) {
+					validationPin = validationCode.getPin();
+				} else {
+					validationPin = null;
+					mPasswordView.setError(getString(R.string.error_incorrect_password));
+				}
+			} else if (errorMessage != null && !errorMessage.isEmpty()) {
+				Log.d(LOG_TAG, String.format("An error occurred: %s", errorMessage));
+
+				// TODO: change this setText to another textView
+				mPasswordView.setText(String.format(getString(R.string.error_message), errorMessage));
+			}
+			}
+		};
+
+		Log.d(LOG_TAG, "Creating Local Intent Filter");
+		IntentFilter intentFilter = new IntentFilter(CallbackIntentService.ACTION_REQUEST_VALIDATION_CODE_RESULT);
+		intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
+		LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);
+	}
+
+	private void bindEventListeners () {
+		mSignInButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				attemptLogin();
+				if (mActionBar != null) {
+					mActionBar.setDisplayHomeAsUpEnabled(true);
+				}
 			}
 		});
-
 
 		mRetryView.setOnClickListener(new OnClickListener() {
 			private Boolean permission = true;
@@ -117,11 +161,11 @@ public class LoginActivity extends AppCompatActivity {
 		mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-				if (id == R.id.login || id == EditorInfo.IME_NULL) {
-					attemptLogin();
-					return true;
-				}
-				return false;
+			if (id == R.id.login || id == EditorInfo.IME_NULL) {
+				attemptLogin();
+				return true;
+			}
+			return false;
 			}
 		});
 
@@ -155,39 +199,19 @@ public class LoginActivity extends AppCompatActivity {
 				}
 			}
 		});
+	}
 
-		broadcastReceiver = new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context context, Intent intent) {
-				Log.d(LOG_TAG, "REQUEST_VALIDATION_CODE_RESULT intent was received");
-				intentAwaiting = false;
-				showProgress(false);
-				Bundle bundle = intent.getExtras();
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
 
-				final ValidationCode validationCode = (ValidationCode) bundle.getSerializable(CallbackIntentService.EXTRA_REQUEST_VALIDATION_CODE_RESULT);
-				final String errorMessage = bundle.getString(CallbackIntentService.EXTRA_ERROR_MESSAGE);
+		if (id == android.R.id.home) {
+//			onBackPressed();
+			showSecondStep(false);
+//			return true;
+		}
 
-				if (validationCode != null) {
-					Log.d(LOG_TAG, String.format("ValidationCode data: {result:%s, pin:%s}", validationCode.getResult(), validationCode.getPin()));
-					if (validationCode.getResult()) {
-						validationPin = validationCode.getPin();
-					} else {
-						validationPin = null;
-						mPasswordView.setError(getString(R.string.error_incorrect_password));
-					}
-				} else if (errorMessage != null && !errorMessage.isEmpty()) {
-					Log.d(LOG_TAG, String.format("An error occurred: %s", errorMessage));
-
-					// TODO: change this setText to another textView
-					mPasswordView.setText(String.format(getString(R.string.error_message), errorMessage));
-				}
-			}
-		};
-
-		Log.d(LOG_TAG, "Creating Local Intent Filter");
-		IntentFilter intentFilter = new IntentFilter(CallbackIntentService.ACTION_REQUEST_VALIDATION_CODE_RESULT);
-		intentFilter.addCategory(Intent.CATEGORY_DEFAULT);
-		LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);
+		return super.onOptionsItemSelected(item);
 	}
 
 	private boolean mayRequestContacts() {
@@ -198,7 +222,7 @@ public class LoginActivity extends AppCompatActivity {
 			return true;
 		}
 		if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-			Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
+			Snackbar.make(mPasswordView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
 					.setAction(android.R.string.ok, new View.OnClickListener() {
 						@Override
 						@TargetApi(Build.VERSION_CODES.M)
@@ -231,50 +255,51 @@ public class LoginActivity extends AppCompatActivity {
 	 * errors are presented and no actual login attempt is made.
 	 */
 	private void attemptLogin() {
-		if (intentAwaiting) {
-			return;
+		if (!intentAwaiting) {
+			boolean cancel = false;
+			View focusView = null;
+
+			mPhoneView.setError(null);
+			currentPhone = mPhoneView.getUnmaskedText();
+
+			// Check for a valid phone.
+			if (TextUtils.isEmpty(currentPhone)) {
+				mPhoneView.setError(getString(R.string.error_field_required));
+				focusView = mPhoneView;
+				cancel = true;
+			} else if (!isPhoneValid(currentPhone)) {
+				mPhoneView.setError(getString(R.string.error_invalid_phone));
+				focusView = mPhoneView;
+				cancel = true;
+			}
+
+			if (cancel) {
+				focusView.requestFocus();
+			} else {
+				showProgress(true);
+				showSecondStep(true);
+				intentAwaiting = true;
+				requestValidationCall(currentPhone);
+			}
 		}
+	}
 
-		// Reset errors.
-		mPhoneView.setError(null);
-		String phone = mPhoneView.getUnmaskedText();
-		this.currentPhone = phone;
-
-		boolean cancel = false;
-		View focusView = null;
-
-		// Check for a valid phone.
-		if (TextUtils.isEmpty(phone)) {
-			mPhoneView.setError(getString(R.string.error_field_required));
-			focusView = mPhoneView;
-			cancel = true;
-		} else if (!isPhoneValid(phone)) {
-			mPhoneView.setError(getString(R.string.error_invalid_phone));
-			focusView = mPhoneView;
-			cancel = true;
-		}
-
-		if (cancel) {
-			focusView.requestFocus();
-		} else {
-			showProgress(true);
-			intentAwaiting = true;
-
-			// TODO: add "if" and move to another fn
+	private void showSecondStep (final boolean showSecond) {
+		if (showSecond) {
+			mSignInButton.setVisibility(View.GONE);
 			mPasswordView.setVisibility(View.VISIBLE);
-			mPasswordView.requestFocus();
+			mCallbackCaption.setVisibility(View.VISIBLE);
+			mRetryView.setVisibility(View.VISIBLE);
 			mPhoneView.setEnabled(false);
-
-			TextView callbackCaption = (TextView) findViewById(R.id.callback_caption);
-			callbackCaption.setVisibility(View.VISIBLE);
-
-			TextView retryValidation = (TextView) findViewById(R.id.retry_validation);
-			retryValidation.setVisibility(View.VISIBLE);
-
-			Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-			mEmailSignInButton.setVisibility(View.GONE);
-
-			requestValidationCall(phone);
+			mPasswordView.requestFocus();
+		} else {
+			mPasswordView.setVisibility(View.GONE);
+			mCallbackCaption.setVisibility(View.GONE);
+			mRetryView.setVisibility(View.GONE);
+			mSignInButton.setVisibility(View.VISIBLE);
+			mPhoneView.setEnabled(true);
+			mPhoneView.requestFocus();
+			mActionBar.setDisplayHomeAsUpEnabled(false);
 		}
 	}
 
@@ -289,8 +314,8 @@ public class LoginActivity extends AppCompatActivity {
 	private void requestValidationCall (String phone) {
 		if (phone != null && phone.length() > 0) {
 			Intent intent = new Intent(getApplicationContext(), CallbackIntentService.class)
-					.setAction(CallbackIntentService.ACTION_REQUEST_VALIDATION_CODE)
-					.putExtra(CallbackIntentService.EXTRA_PHONE_NUMBER, String.format("+7%s", phone));
+				.setAction(CallbackIntentService.ACTION_REQUEST_VALIDATION_CODE)
+				.putExtra(CallbackIntentService.EXTRA_PHONE_NUMBER, String.format("+7%s", phone));
 			startService(intent);
 		}
 	}

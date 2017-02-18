@@ -10,11 +10,11 @@ import ru.mail.tp.callbackpal.R;
  * Created by Martin on 18.02.2017.
  */
 
-public class NetworkUtil {
+class NetworkUtil {
 
-	private static int TYPE_NOT_CONNECTED = 0;
-	private static int TYPE_WIFI = 1;
-	private static int TYPE_MOBILE = 2;
+	private final static int TYPE_NOT_CONNECTED = 0;
+	private final static int TYPE_WIFI = 1;
+	private final static int TYPE_MOBILE = 2;
 
 	private static int getConnectivityStatus(Context context) {
 		ConnectivityManager cm = (ConnectivityManager) context

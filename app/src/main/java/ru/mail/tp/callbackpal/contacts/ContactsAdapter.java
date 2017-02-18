@@ -95,13 +95,11 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
 	static class ContactViewHolder extends RecyclerView.ViewHolder{
 
-		private final ImageView ivContactImage;
 		private final TextView tvContactName;
 		private final TextView tvPhoneNumber;
 
 		ContactViewHolder(View itemView) {
 			super(itemView);
-			ivContactImage = (ImageView) itemView.findViewById(R.id.ivContactImage);
 			tvContactName = (TextView) itemView.findViewById(R.id.tvContactName);
 			tvPhoneNumber = (TextView) itemView.findViewById(R.id.tvPhoneNumber);
 		}

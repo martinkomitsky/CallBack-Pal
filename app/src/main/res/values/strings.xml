@@ -33,4 +33,8 @@
 	<string name="info_dial">Dial in progress…</string>
 
 	<string name="unknown_error">An error occurred</string>
+
+	<string name="info_net_status_wifi_enabled">Wifi enabled</string>
+	<string name="info_net_status_mobile_enabled">Mobile data enabled</string>
+	<string name="info_net_status_disconnected">Not connected to Internet</string>
 </resources>

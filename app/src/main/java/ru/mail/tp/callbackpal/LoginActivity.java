@@ -52,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
 	// UI references.
 	private MaskedEditText mPhoneView;
 	private EditText mPasswordView;
+	private TextView mErrorDescriptionView;
 	private TextView mTimerView;
 	private View mProgressView;
 	private View mLoginFormView;
@@ -82,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
 		mRetryView = findViewById(R.id.retry_validation);
 		mCallbackCaption = findViewById(R.id.callback_caption);
 		mSignInButton = findViewById(R.id.sign_in_button);
+		mErrorDescriptionView = (TextView) findViewById(R.id.error_description);
 		mTimerView = (TextView) findViewById(R.id.timer_view);
 		mActionBar = getSupportActionBar();
 
@@ -93,6 +95,7 @@ public class LoginActivity extends AppCompatActivity {
 			Log.d(LOG_TAG, "REQUEST_VALIDATION_CODE_RESULT intent was received");
 			intentAwaiting = false;
 			showProgress(false);
+			mErrorDescriptionView.setVisibility(View.GONE);
 			Bundle bundle = intent.getExtras();
 
 			final ValidationCode validationCode = (ValidationCode) bundle.getSerializable(CallbackIntentService.EXTRA_REQUEST_VALIDATION_CODE_RESULT);
@@ -109,8 +112,8 @@ public class LoginActivity extends AppCompatActivity {
 			} else if (errorMessage != null && !errorMessage.isEmpty()) {
 				Log.d(LOG_TAG, String.format("An error occurred: %s", errorMessage));
 
-				// TODO: change this setText to another textView
-				mPasswordView.setText(String.format(getString(R.string.error_message), errorMessage));
+				mErrorDescriptionView.setVisibility(View.VISIBLE);
+				mErrorDescriptionView.setText(String.format(getString(R.string.error_message), errorMessage));
 			}
 			}
 		};
@@ -138,6 +141,7 @@ public class LoginActivity extends AppCompatActivity {
 			@Override
 			public void onClick(View v) {
 				if (permission) {
+					mErrorDescriptionView.setVisibility(View.GONE);
 					requestValidationCall(currentPhone);
 					permission = false;
 
@@ -360,7 +364,6 @@ public class LoginActivity extends AppCompatActivity {
 		super.onSaveInstanceState(outState);
 		Log.d(LOG_TAG, "onSaveInstanceState");
 	}
-
 
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);

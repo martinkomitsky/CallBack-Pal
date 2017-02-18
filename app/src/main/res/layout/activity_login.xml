@@ -97,8 +97,14 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:textColor="@color/red"
-				android:visibility="gone"
-				/>
+				android:visibility="gone" />
+
+			<TextView
+				android:id="@+id/error_description"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textColor="@color/red"
+				android:visibility="gone" />
 
 		</LinearLayout>
 	</ScrollView>

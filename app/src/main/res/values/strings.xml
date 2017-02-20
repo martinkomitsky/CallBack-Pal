@@ -11,8 +11,8 @@
 	<string name="error_invalid_phone">This phone number is too short</string>
 	<string name="error_incorrect_password">This password is incorrect</string>
 	<string name="error_field_required">This field is required</string>
-	<string name="permission_rationale">"Contacts permissions are needed for providing email
-		completions."
+	<string name="permission_rationale">"Contacts permissions are needed for providing contact
+		list."
 	</string>
 	<string name="callback_caption">The system will call to you shortly. Enter the code above.</string>
 	<string name="retry_validation">Did not receive a call? <u>Retry</u>.</string>

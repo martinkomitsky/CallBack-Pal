@@ -14,10 +14,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ru.mail.tp.callbackpal.CallbackIntentService;
 import ru.mail.tp.callbackpal.R;
+import ru.mail.tp.callbackpal.db.CallHistoryHelper;
 
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>{
@@ -27,11 +29,14 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 	public void callBackFN(){}
 	public boolean getNetworkState(){ return false;}
 
-		private static final String LOG_TAG = "[ContactsAdapter]";
+	private static final String LOG_TAG = "[ContactsAdapter]";
+
+	private CallHistoryHelper callHistoryHelper;
 
 	public ContactsAdapter(List<Contact> contactList, Context mContext){
 		this.contactList = contactList;
 		this.mContext = mContext;
+		this.callHistoryHelper = new CallHistoryHelper(mContext);
 	}
 
 	@Override
@@ -72,6 +77,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 						.putExtra(CallbackIntentService.EXTRA_NUMBER_B, currentPhone);
 				mContext.startService(intent);
 
+				callHistoryHelper.putRecord("89165599432", new Date());
 				callBackFN();
 			} else {
 				Toast.makeText(mContext, mContext.getString(R.string.unknown_error), Toast.LENGTH_LONG).show();

@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,10 +23,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 	private List<Contact> contactList;
 	private final Context mContext;
 
+	private final String SHARED_PREF_NAME = "ValidationData";
+	private final String SHARED_PREF_VALUE_PHONE = "phone";
+	private static final String LOG_TAG = "[ContactsAdapter]";
+
 	public void callBackFN(){}
 	public boolean getNetworkState(){ return false;}
-
-		private static final String LOG_TAG = "[ContactsAdapter]";
 
 	public ContactsAdapter(List<Contact> contactList, Context mContext){
 		this.contactList = contactList;
@@ -58,8 +59,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 			@Override
 			public void onClick(View v) {
 			String currentPhone = holder.tvPhoneNumber.getText().toString().replaceAll("[^0-9+]", "");
-			SharedPreferences pref = mContext.getApplicationContext().getSharedPreferences("ValidationData", 0);
-			String phoneA = pref.getString("phone", null);
+			SharedPreferences pref = mContext.getApplicationContext().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+			String phoneA = pref.getString(SHARED_PREF_VALUE_PHONE, null);
 
 
 			if (phoneA != null && phoneA.length() > 0 && currentPhone != null && currentPhone.length() > 0 && getNetworkState()) {

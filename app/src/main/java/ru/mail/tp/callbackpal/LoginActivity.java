@@ -52,6 +52,12 @@ public class LoginActivity extends AppCompatActivity {
 	private final String ACTION_CONN_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
 	private final String ACTION_WIFI_CHANGE = "android.net.wifi.WIFI_STATE_CHANGED";
 
+	private final String SHARED_PREF_NAME = "ValidationData";
+	private final String SHARED_PREF_VALUE_VALIDATION_STATUS = "phone_validated";
+	private final String SHARED_PREF_VALUE_PHONE = "phone";
+	private final String PHONE_COUNTRY_CODE = "+7";
+	private final String PHONE_COUNTRY_CODE_TEMPLATE = "+7%s";
+
 	private String validationPin = null;
 	private String currentPhone;
 
@@ -189,16 +195,14 @@ public class LoginActivity extends AppCompatActivity {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				String enteredPin = s.toString();
 				if (enteredPin.length() == 4) {
-					Log.d(LOG_TAG, "edit: " + enteredPin);
-
-					SharedPreferences pref =  getApplicationContext().getSharedPreferences("ValidationData", MODE_PRIVATE);
+					SharedPreferences pref =  getApplicationContext().getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
 					SharedPreferences.Editor editor = pref.edit();
 
 					if (isPasswordValid(enteredPin)) {
 						Log.d(LOG_TAG, "Phone validation success!");
 
-						editor.putBoolean("phone_validated", true);
-						editor.putString("phone", "+7" + mPhoneView.getUnmaskedText());
+						editor.putBoolean(SHARED_PREF_VALUE_VALIDATION_STATUS, true);
+						editor.putString(SHARED_PREF_VALUE_PHONE, PHONE_COUNTRY_CODE + mPhoneView.getUnmaskedText());
 						editor.apply();
 
 						Intent startSecondActivity = new Intent(LoginActivity.this, ContactsListActivity.class);
@@ -207,7 +211,7 @@ public class LoginActivity extends AppCompatActivity {
 
 					} else {
 						mPasswordView.setError(getString(R.string.error_invalid_password));
-						editor.putBoolean("phone_validated", false);
+						editor.putBoolean(SHARED_PREF_VALUE_VALIDATION_STATUS, false);
 						editor.apply();
 					}
 				}
@@ -264,8 +268,8 @@ public class LoginActivity extends AppCompatActivity {
 	}
 
 	/**
-	 * Attempts to sign in or register the account specified by the login form.
-	 * If there are form errors (invalid email, missing fields, etc.), the
+	 * Attempts to sign in account specified by the login form.
+	 * If there are form errors (invalid phone, missing fields, etc.), the
 	 * errors are presented and no actual login attempt is made.
 	 */
 	private void attemptLogin() {
@@ -332,7 +336,7 @@ public class LoginActivity extends AppCompatActivity {
 		if (phone != null && phone.length() > 0) {
 			Intent intent = new Intent(getApplicationContext(), CallbackIntentService.class)
 				.setAction(CallbackIntentService.ACTION_REQUEST_VALIDATION_CODE)
-				.putExtra(CallbackIntentService.EXTRA_PHONE_NUMBER, String.format("+7%s", phone));
+				.putExtra(CallbackIntentService.EXTRA_PHONE_NUMBER, String.format(PHONE_COUNTRY_CODE_TEMPLATE, phone));
 			startService(intent);
 		}
 	}

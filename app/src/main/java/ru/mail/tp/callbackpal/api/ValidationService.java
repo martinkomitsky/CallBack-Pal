@@ -9,6 +9,7 @@ import ru.mail.tp.callbackpal.api.models.ValidationCode;
 
 /**
  * Created by Martin on 05.01.2017.
+ * martin00@yandex.ru
  */
 
 public interface ValidationService {

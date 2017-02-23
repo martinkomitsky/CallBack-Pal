@@ -6,6 +6,7 @@ import android.content.Intent;
 
 /**
  * Created by Martin on 18.02.2017.
+ * martin00@yandex.ru
  */
 
 public class NetworkChangeReceiver extends BroadcastReceiver {

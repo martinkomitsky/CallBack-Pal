@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 /**
  * Created by Martin on 23.02.2017.
+ * martin00@yandex.ru
  */
 
 public class InformerCreator {

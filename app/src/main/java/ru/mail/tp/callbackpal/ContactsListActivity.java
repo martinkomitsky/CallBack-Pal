@@ -206,6 +206,7 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 							}
 							phoneCursor.close();
 							contactList.add(contact);
+							contactAdapter.notifyDataSetChanged();
 						}
 					}
 				}

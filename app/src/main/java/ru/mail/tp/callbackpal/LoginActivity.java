@@ -406,9 +406,10 @@ public class LoginActivity extends AppCompatActivity {
 
 	@Override
 	protected void onDestroy() {
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(networkChangedBroadcastReceiver);
 		super.onDestroy();
+		Log.d(LOG_TAG, "onDestroy");
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+		unregisterReceiver(networkChangedBroadcastReceiver);
 	}
 
 	public class CallbackRunner implements NetworkStateChangeListener {

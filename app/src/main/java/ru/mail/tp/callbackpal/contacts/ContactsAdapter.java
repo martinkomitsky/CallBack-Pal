@@ -10,13 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.mail.tp.callbackpal.CallbackIntentService;
 import ru.mail.tp.callbackpal.R;
+import ru.mail.tp.callbackpal.utils.InformerCreator;
 
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>{
@@ -62,10 +62,9 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 			SharedPreferences pref = mContext.getApplicationContext().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
 			String phoneA = pref.getString(SHARED_PREF_VALUE_PHONE, null);
 
-
 			if (phoneA != null && phoneA.length() > 0 && currentPhone != null && currentPhone.length() > 0 && getNetworkState()) {
 
-				Toast.makeText(mContext, String.format(mContext.getString(R.string.action_calling_number), currentPhone), Toast.LENGTH_LONG).show();
+				InformerCreator.showToast(String.format(mContext.getString(R.string.action_calling_number), currentPhone), mContext);
 
 				Intent intent = new Intent(mContext.getApplicationContext(), CallbackIntentService.class)
 						.setAction(CallbackIntentService.ACTION_INIT_CALLBACK)
@@ -75,7 +74,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
 				callBackFN();
 			} else {
-				Toast.makeText(mContext, mContext.getString(R.string.unknown_error), Toast.LENGTH_LONG).show();
+				InformerCreator.showToast(mContext.getString(R.string.unknown_error), mContext);
 				Log.d(LOG_TAG, "One of the numbers is blank");
 			}
 			}

@@ -9,11 +9,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.ContactsContract;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -31,8 +29,8 @@ import ru.mail.tp.callbackpal.contacts.Contact;
 import ru.mail.tp.callbackpal.contacts.ContactsAdapter;
 import ru.mail.tp.callbackpal.networkState.NetworkChangeReceiver;
 import ru.mail.tp.callbackpal.networkState.NetworkStateChangeListener;
+import ru.mail.tp.callbackpal.utils.InformerCreator;
 
-import android.view.View;
 import android.widget.TextView;
 
 public class ContactsListActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor> {
@@ -219,23 +217,6 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 
 	}
 
-	private void showSnack(String message, boolean isConnected) {
-		int color;
-		if (isConnected) {
-			color = Color.WHITE;
-		} else {
-			color = Color.RED;
-		}
-
-		Snackbar snackbar = Snackbar
-				.make(findViewById(R.id.rvContacts), message, isConnected ? Snackbar.LENGTH_LONG : Snackbar.LENGTH_INDEFINITE);
-
-		View sbView = snackbar.getView();
-		TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-		textView.setTextColor(color);
-		snackbar.show();
-	}
-
 	@Override
 	protected void onDestroy() {
 		LocalBroadcastManager.getInstance(this).unregisterReceiver(networkChangedBroadcastReceiver);
@@ -246,7 +227,7 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 		@Override
 		public void onNetworkStateChange(String message, boolean state) {
 			networkState = state;
-			showSnack(message, state);
+			InformerCreator.showSnack(message, state, findViewById(R.id.rvContacts));
 		}
 	}
 }

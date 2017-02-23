@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -35,6 +34,7 @@ import com.github.pinball83.maskededittext.MaskedEditText;
 import ru.mail.tp.callbackpal.api.models.ValidationCode;
 import ru.mail.tp.callbackpal.networkState.NetworkChangeReceiver;
 import ru.mail.tp.callbackpal.networkState.NetworkStateChangeListener;
+import ru.mail.tp.callbackpal.utils.InformerCreator;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -341,23 +341,6 @@ public class LoginActivity extends AppCompatActivity {
 		}
 	}
 
-	private void showSnack(String message, boolean isConnected) {
-		int color;
-		if (isConnected) {
-			color = Color.WHITE;
-		} else {
-			color = Color.RED;
-		}
-
-		Snackbar snackbar = Snackbar
-			.make(findViewById(R.id.email_login_form), message, isConnected ? Snackbar.LENGTH_LONG : Snackbar.LENGTH_INDEFINITE);
-
-		View sbView = snackbar.getView();
-		TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-		textView.setTextColor(color);
-		snackbar.show();
-	}
-
 	/**
 	 * Shows the progress UI and hides the login form.
 	 */
@@ -417,7 +400,7 @@ public class LoginActivity extends AppCompatActivity {
 		@Override
 		public void onNetworkStateChange(String message, boolean state) {
 			Log.d(LOG_TAG, message);
-			showSnack(message, state);
+			InformerCreator.showSnack(message, state, findViewById(R.id.email_login_form));
 		}
 	}
 }

@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.ContactsContract;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,7 @@ import ru.mail.tp.callbackpal.networkState.NetworkChangeReceiver;
 import ru.mail.tp.callbackpal.networkState.NetworkStateChangeListener;
 import ru.mail.tp.callbackpal.utils.InformerCreator;
 
+import android.view.View;
 import android.widget.TextView;
 
 public class ContactsListActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor> {
@@ -39,7 +41,7 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 	private final List<Contact> contactList = new ArrayList<>();
 	private final String ACTION_CONN_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
 	private final String ACTION_WIFI_CHANGE = "android.net.wifi.WIFI_STATE_CHANGED";
-	private final String  LOG_TAG = "ContactListActivity";
+	private final String LOG_TAG = "ContactListActivity";
 
 	private boolean networkState = false;
 
@@ -58,6 +60,14 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 		getLoaderManager().initLoader(0, null, this);
 		RecyclerView rvContacts = (RecyclerView) findViewById(R.id.rvContacts);
 
+		View fab = findViewById(R.id.FAB);
+		fab.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				final Intent intent = new Intent(Intent.ACTION_INSERT, ContactsContract.Contacts.CONTENT_URI);
+				startActivity(intent);
+			}
+		});
 		contactAdapter = new ContactsAdapter(contactList, getApplicationContext()) {
 			@Override
 			public void callBackFN(){

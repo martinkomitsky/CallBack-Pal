@@ -18,7 +18,7 @@ public class CallbackIntentService extends IntentService {
 
 	public static final String ACTION_INIT_CALLBACK = "ru.mail.tp.callbackpal.ACTION_INIT_CALLBACK";
 	public static final String ACTION_REQUEST_VALIDATION_CODE = "ru.mail.tp.callbackpal.ACTION_REQUEST_VALIDATION_CODE";
-	public static final String ACTION_INIT_CALLBACK_RESULT = "ru.mail.tp.callbackpal.ACTION_INIT_CALLBACK_RESULT";
+	private static final String ACTION_INIT_CALLBACK_RESULT = "ru.mail.tp.callbackpal.ACTION_INIT_CALLBACK_RESULT";
 	public static final String ACTION_REQUEST_VALIDATION_CODE_RESULT = "ru.mail.tp.callbackpal.ACTION_REQUEST_VALIDATION_CODE_RESULT";
 
 	public static final String EXTRA_NUMBER_A = "ru.mail.tp.callbackpal.NUMBER_A";
@@ -27,7 +27,7 @@ public class CallbackIntentService extends IntentService {
 	public static final String EXTRA_PHONE_NUMBER = "ru.mail.tp.callbackpal.EXTRA_PHONE_NUMBER";
 	public static final String EXTRA_PASSWORD = "ru.mail.tp.callbackpal.EXTRA_PASSWORD";
 
-	public static final String EXTRA_INIT_CALLBACK_RESULT = "ru.mail.tp.callbackpal.EXTRA_INIT_CALLBACK_RESULT";
+	private static final String EXTRA_INIT_CALLBACK_RESULT = "ru.mail.tp.callbackpal.EXTRA_INIT_CALLBACK_RESULT";
 	public static final String EXTRA_REQUEST_VALIDATION_CODE_RESULT = "ru.mail.tp.callbackpal.EXTRA_REQUEST_VALIDATION_CODE_RESULT";
 	public static final String EXTRA_ERROR_MESSAGE = "ru.mail.tp.callbackpal.EXTRA_ERROR_MESSAGE";
 

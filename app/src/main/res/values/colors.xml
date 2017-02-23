@@ -2,13 +2,10 @@
 <resources>
 	<color name="colorPrimary">#8bc34a</color>
 	<color name="colorPrimaryDark">#76a73e</color>
-	<color name="colorPrimaryLight">#f6ffed</color>
 	<color name="colorAccent">#8bc34a</color>
-	<color name="whitesas">#F3EFF5</color>
-
 	<color name="backgroundColor">#FAFFFD</color>
-	<color name="silver">#757780</color>
+
+	<color name="whitesas">#F3EFF5</color>
 	<color name="black">#010101</color>
 	<color name="red">#a01b1b</color>
-
 </resources>

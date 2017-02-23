@@ -11,7 +11,7 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class SharedPreferenceHelper {
-	public static final String SHARED_PREF_NAME = "ValidationData";
+	private static final String SHARED_PREF_NAME = "ValidationData";
 	public static final String SHARED_PREF_VALUE_VALIDATION_STATUS = "phone_validated";
 	public static final String SHARED_PREF_VALUE_PHONE = "phone";
 

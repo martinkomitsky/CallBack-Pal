@@ -12,6 +12,9 @@ import android.content.Intent;
 public class NetworkChangeReceiver extends BroadcastReceiver {
 	private NetworkStateChangeListener obj;
 
+	public static final String ACTION_CONN_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
+	public static final String ACTION_WIFI_CHANGE = "android.net.wifi.WIFI_STATE_CHANGED";
+
 	public NetworkChangeReceiver(NetworkStateChangeListener obj) {
 		this.obj = obj;
 	}

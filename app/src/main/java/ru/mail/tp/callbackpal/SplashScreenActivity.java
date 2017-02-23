@@ -1,7 +1,6 @@
 package ru.mail.tp.callbackpal;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,13 +10,13 @@ import android.util.Log;
 
 import java.lang.ref.WeakReference;
 
+import ru.mail.tp.callbackpal.utils.SharedPreferenceHelper;
+
 public class SplashScreenActivity extends AppCompatActivity {
 	private static final String LOG_TAG = "[SplashScreenActivity]";
 
 	private boolean isValidated;
 	private boolean backPressed;
-	private final String SHARED_PREF_NAME = "ValidationData";
-	private final String SHARED_PREF_VALUE_VALIDATION_STATUS = "phone_validated";
 
 	private static class DelayedHandler extends Handler {
 		private final WeakReference<SplashScreenActivity> mActivity;
@@ -61,8 +60,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 			supportActionBar.hide();
 		}
 
-		SharedPreferences pref = getApplicationContext().getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
-		isValidated = pref.getBoolean(SHARED_PREF_VALUE_VALIDATION_STATUS, false);
+		isValidated = SharedPreferenceHelper.isValidated(getApplicationContext());
 		mHandler.sendMessageDelayed(new Message(), 1000);
 	}
 

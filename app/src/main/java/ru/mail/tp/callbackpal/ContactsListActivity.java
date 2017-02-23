@@ -38,8 +38,6 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 	private ContactsAdapter contactAdapter;
 	private BroadcastReceiver networkChangedBroadcastReceiver;
 	private final List<Contact> contactList = new ArrayList<>();
-	private final String ACTION_CONN_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
-	private final String ACTION_WIFI_CHANGE = "android.net.wifi.WIFI_STATE_CHANGED";
 	private final String LOG_TAG = "ContactListActivity";
 
 	private boolean networkState = false;
@@ -82,8 +80,8 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 		rvContacts.setAdapter(contactAdapter);
 
 		networkChangedBroadcastReceiver = new NetworkChangeReceiver(new CallbackRunner());
-		IntentFilter networkChangedFilter = new IntentFilter(ACTION_CONN_CHANGE);
-		networkChangedFilter.addAction(ACTION_WIFI_CHANGE);
+		IntentFilter networkChangedFilter = new IntentFilter(NetworkChangeReceiver.ACTION_CONN_CHANGE);
+		networkChangedFilter.addAction(NetworkChangeReceiver.ACTION_WIFI_CHANGE);
 		networkChangedFilter.addCategory(Intent.CATEGORY_DEFAULT);
 		registerReceiver(networkChangedBroadcastReceiver, networkChangedFilter);
 	}

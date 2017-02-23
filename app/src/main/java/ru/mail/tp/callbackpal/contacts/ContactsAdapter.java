@@ -2,7 +2,6 @@ package ru.mail.tp.callbackpal.contacts;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,14 +16,12 @@ import java.util.List;
 import ru.mail.tp.callbackpal.CallbackIntentService;
 import ru.mail.tp.callbackpal.R;
 import ru.mail.tp.callbackpal.utils.InformerCreator;
+import ru.mail.tp.callbackpal.utils.SharedPreferenceHelper;
 
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>{
 	private List<Contact> contactList;
 	private final Context mContext;
-
-	private final String SHARED_PREF_NAME = "ValidationData";
-	private final String SHARED_PREF_VALUE_PHONE = "phone";
 	private static final String LOG_TAG = "[ContactsAdapter]";
 
 	public void callBackFN(){}
@@ -59,8 +56,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 			@Override
 			public void onClick(View v) {
 			String currentPhone = holder.tvPhoneNumber.getText().toString().replaceAll("[^0-9+]", "");
-			SharedPreferences pref = mContext.getApplicationContext().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-			String phoneA = pref.getString(SHARED_PREF_VALUE_PHONE, null);
+			String phoneA = SharedPreferenceHelper.getValue(mContext, SharedPreferenceHelper.SHARED_PREF_VALUE_PHONE);
 
 			if (phoneA != null && phoneA.length() > 0 && currentPhone != null && currentPhone.length() > 0 && getNetworkState()) {
 

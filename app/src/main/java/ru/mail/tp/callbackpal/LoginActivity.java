@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -35,6 +34,7 @@ import ru.mail.tp.callbackpal.api.models.ValidationCode;
 import ru.mail.tp.callbackpal.networkState.NetworkChangeReceiver;
 import ru.mail.tp.callbackpal.networkState.NetworkStateChangeListener;
 import ru.mail.tp.callbackpal.utils.InformerCreator;
+import ru.mail.tp.callbackpal.utils.SharedPreferenceHelper;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -49,12 +49,6 @@ public class LoginActivity extends AppCompatActivity {
 	private static final int REQUEST_READ_CONTACTS = 0;
 	private static final String LOG_TAG = "[LoginActivity]";
 
-	private final String ACTION_CONN_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
-	private final String ACTION_WIFI_CHANGE = "android.net.wifi.WIFI_STATE_CHANGED";
-
-	private final String SHARED_PREF_NAME = "ValidationData";
-	private final String SHARED_PREF_VALUE_VALIDATION_STATUS = "phone_validated";
-	private final String SHARED_PREF_VALUE_PHONE = "phone";
 	private final String PHONE_COUNTRY_CODE = "+7";
 	private final String PHONE_COUNTRY_CODE_TEMPLATE = "+7%s";
 
@@ -137,8 +131,8 @@ public class LoginActivity extends AppCompatActivity {
 		LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);
 
 		networkChangedBroadcastReceiver = new NetworkChangeReceiver(new CallbackRunner());
-		IntentFilter networkChangedFilter = new IntentFilter(ACTION_CONN_CHANGE);
-		networkChangedFilter.addAction(ACTION_WIFI_CHANGE);
+		IntentFilter networkChangedFilter = new IntentFilter(NetworkChangeReceiver.ACTION_CONN_CHANGE);
+		networkChangedFilter.addAction(NetworkChangeReceiver.ACTION_WIFI_CHANGE);
 		networkChangedFilter.addCategory(Intent.CATEGORY_DEFAULT);
 		registerReceiver(networkChangedBroadcastReceiver, networkChangedFilter);
 	}
@@ -195,15 +189,11 @@ public class LoginActivity extends AppCompatActivity {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				String enteredPin = s.toString();
 				if (enteredPin.length() == 4) {
-					SharedPreferences pref =  getApplicationContext().getSharedPreferences(SHARED_PREF_NAME, MODE_PRIVATE);
-					SharedPreferences.Editor editor = pref.edit();
-
 					if (isPasswordValid(enteredPin)) {
 						Log.d(LOG_TAG, "Phone validation success!");
 
-						editor.putBoolean(SHARED_PREF_VALUE_VALIDATION_STATUS, true);
-						editor.putString(SHARED_PREF_VALUE_PHONE, PHONE_COUNTRY_CODE + mPhoneView.getUnmaskedText());
-						editor.apply();
+						SharedPreferenceHelper.setValue(getApplicationContext(), SharedPreferenceHelper.SHARED_PREF_VALUE_VALIDATION_STATUS, true);
+						SharedPreferenceHelper.setValue(getApplicationContext(), SharedPreferenceHelper.SHARED_PREF_VALUE_PHONE, PHONE_COUNTRY_CODE + mPhoneView.getUnmaskedText());
 
 						Intent startSecondActivity = new Intent(LoginActivity.this, ContactsListActivity.class);
 						LoginActivity.this.startActivity(startSecondActivity);
@@ -211,8 +201,7 @@ public class LoginActivity extends AppCompatActivity {
 
 					} else {
 						mPasswordView.setError(getString(R.string.error_invalid_password));
-						editor.putBoolean(SHARED_PREF_VALUE_VALIDATION_STATUS, false);
-						editor.apply();
+						SharedPreferenceHelper.setValue(getApplicationContext(), SharedPreferenceHelper.SHARED_PREF_VALUE_VALIDATION_STATUS, false);
 					}
 				}
 			}

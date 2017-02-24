@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * Created by Martin on 07.01.2017.
+ * martin00@yandex.ru
  */
 
 public class ValidationCode implements Serializable {

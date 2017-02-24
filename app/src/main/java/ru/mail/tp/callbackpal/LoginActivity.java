@@ -7,9 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -35,6 +33,8 @@ import com.github.pinball83.maskededittext.MaskedEditText;
 import ru.mail.tp.callbackpal.api.models.ValidationCode;
 import ru.mail.tp.callbackpal.networkState.NetworkChangeReceiver;
 import ru.mail.tp.callbackpal.networkState.NetworkStateChangeListener;
+import ru.mail.tp.callbackpal.utils.InformerCreator;
+import ru.mail.tp.callbackpal.utils.SharedPreferenceHelper;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -49,8 +49,8 @@ public class LoginActivity extends AppCompatActivity {
 	private static final int REQUEST_READ_CONTACTS = 0;
 	private static final String LOG_TAG = "[LoginActivity]";
 
-	private final String ACTION_CONN_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
-	private final String ACTION_WIFI_CHANGE = "android.net.wifi.WIFI_STATE_CHANGED";
+	private final String PHONE_COUNTRY_CODE = "+7";
+	private final String PHONE_COUNTRY_CODE_TEMPLATE = "+7%s";
 
 	private String validationPin = null;
 	private String currentPhone;
@@ -131,8 +131,8 @@ public class LoginActivity extends AppCompatActivity {
 		LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);
 
 		networkChangedBroadcastReceiver = new NetworkChangeReceiver(new CallbackRunner());
-		IntentFilter networkChangedFilter = new IntentFilter(ACTION_CONN_CHANGE);
-		networkChangedFilter.addAction(ACTION_WIFI_CHANGE);
+		IntentFilter networkChangedFilter = new IntentFilter(NetworkChangeReceiver.ACTION_CONN_CHANGE);
+		networkChangedFilter.addAction(NetworkChangeReceiver.ACTION_WIFI_CHANGE);
 		networkChangedFilter.addCategory(Intent.CATEGORY_DEFAULT);
 		registerReceiver(networkChangedBroadcastReceiver, networkChangedFilter);
 	}
@@ -189,17 +189,11 @@ public class LoginActivity extends AppCompatActivity {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				String enteredPin = s.toString();
 				if (enteredPin.length() == 4) {
-					Log.d(LOG_TAG, "edit: " + enteredPin);
-
-					SharedPreferences pref =  getApplicationContext().getSharedPreferences("ValidationData", MODE_PRIVATE);
-					SharedPreferences.Editor editor = pref.edit();
-
 					if (isPasswordValid(enteredPin)) {
 						Log.d(LOG_TAG, "Phone validation success!");
 
-						editor.putBoolean("phone_validated", true);
-						editor.putString("phone", "+7" + mPhoneView.getUnmaskedText());
-						editor.apply();
+						SharedPreferenceHelper.setValue(getApplicationContext(), SharedPreferenceHelper.SHARED_PREF_VALUE_VALIDATION_STATUS, true);
+						SharedPreferenceHelper.setValue(getApplicationContext(), SharedPreferenceHelper.SHARED_PREF_VALUE_PHONE, PHONE_COUNTRY_CODE + mPhoneView.getUnmaskedText());
 
 						Intent startSecondActivity = new Intent(LoginActivity.this, ContactsListActivity.class);
 						LoginActivity.this.startActivity(startSecondActivity);
@@ -207,8 +201,7 @@ public class LoginActivity extends AppCompatActivity {
 
 					} else {
 						mPasswordView.setError(getString(R.string.error_invalid_password));
-						editor.putBoolean("phone_validated", false);
-						editor.apply();
+						SharedPreferenceHelper.setValue(getApplicationContext(), SharedPreferenceHelper.SHARED_PREF_VALUE_VALIDATION_STATUS, false);
 					}
 				}
 			}
@@ -264,8 +257,8 @@ public class LoginActivity extends AppCompatActivity {
 	}
 
 	/**
-	 * Attempts to sign in or register the account specified by the login form.
-	 * If there are form errors (invalid email, missing fields, etc.), the
+	 * Attempts to sign in account specified by the login form.
+	 * If there are form errors (invalid phone, missing fields, etc.), the
 	 * errors are presented and no actual login attempt is made.
 	 */
 	private void attemptLogin() {
@@ -332,26 +325,9 @@ public class LoginActivity extends AppCompatActivity {
 		if (phone != null && phone.length() > 0) {
 			Intent intent = new Intent(getApplicationContext(), CallbackIntentService.class)
 				.setAction(CallbackIntentService.ACTION_REQUEST_VALIDATION_CODE)
-				.putExtra(CallbackIntentService.EXTRA_PHONE_NUMBER, String.format("+7%s", phone));
+				.putExtra(CallbackIntentService.EXTRA_PHONE_NUMBER, String.format(PHONE_COUNTRY_CODE_TEMPLATE, phone));
 			startService(intent);
 		}
-	}
-
-	private void showSnack(String message, boolean isConnected) {
-		int color;
-		if (isConnected) {
-			color = Color.WHITE;
-		} else {
-			color = Color.RED;
-		}
-
-		Snackbar snackbar = Snackbar
-			.make(findViewById(R.id.email_login_form), message, isConnected ? Snackbar.LENGTH_LONG : Snackbar.LENGTH_INDEFINITE);
-
-		View sbView = snackbar.getView();
-		TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-		textView.setTextColor(color);
-		snackbar.show();
 	}
 
 	/**
@@ -402,9 +378,10 @@ public class LoginActivity extends AppCompatActivity {
 
 	@Override
 	protected void onDestroy() {
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(networkChangedBroadcastReceiver);
 		super.onDestroy();
+		Log.d(LOG_TAG, "onDestroy");
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+		unregisterReceiver(networkChangedBroadcastReceiver);
 	}
 
 	public class CallbackRunner implements NetworkStateChangeListener {
@@ -412,7 +389,7 @@ public class LoginActivity extends AppCompatActivity {
 		@Override
 		public void onNetworkStateChange(String message, boolean state) {
 			Log.d(LOG_TAG, message);
-			showSnack(message, state);
+			InformerCreator.showSnack(message, state, findViewById(R.id.email_login_form));
 		}
 	}
 }

@@ -2,16 +2,13 @@ package ru.mail.tp.callbackpal.contacts;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,16 +17,17 @@ import java.util.List;
 import ru.mail.tp.callbackpal.CallbackIntentService;
 import ru.mail.tp.callbackpal.R;
 import ru.mail.tp.callbackpal.db.CallHistoryHelper;
+import ru.mail.tp.callbackpal.utils.InformerCreator;
+import ru.mail.tp.callbackpal.utils.SharedPreferenceHelper;
 
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ContactViewHolder>{
 	private List<Contact> contactList;
 	private final Context mContext;
+	private static final String LOG_TAG = "[ContactsAdapter]";
 
 	public void callBackFN(){}
 	public boolean getNetworkState(){ return false;}
-
-	private static final String LOG_TAG = "[ContactsAdapter]";
 
 	private CallHistoryHelper callHistoryHelper;
 
@@ -63,13 +61,11 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 			@Override
 			public void onClick(View v) {
 			String currentPhone = holder.tvPhoneNumber.getText().toString().replaceAll("[^0-9+]", "");
-			SharedPreferences pref = mContext.getApplicationContext().getSharedPreferences("ValidationData", 0);
-			String phoneA = pref.getString("phone", null);
-
+			String phoneA = SharedPreferenceHelper.getValue(mContext, SharedPreferenceHelper.SHARED_PREF_VALUE_PHONE);
 
 			if (phoneA != null && phoneA.length() > 0 && currentPhone != null && currentPhone.length() > 0 && getNetworkState()) {
 
-				Toast.makeText(mContext, String.format(mContext.getString(R.string.action_calling_number), currentPhone), Toast.LENGTH_LONG).show();
+				InformerCreator.showToast(String.format(mContext.getString(R.string.action_calling_number), currentPhone), mContext);
 
 				Intent intent = new Intent(mContext.getApplicationContext(), CallbackIntentService.class)
 						.setAction(CallbackIntentService.ACTION_INIT_CALLBACK)
@@ -80,7 +76,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 				callHistoryHelper.putRecord("89165599432", new Date());
 				callBackFN();
 			} else {
-				Toast.makeText(mContext, mContext.getString(R.string.unknown_error), Toast.LENGTH_LONG).show();
+				InformerCreator.showToast(mContext.getString(R.string.unknown_error), mContext);
 				Log.d(LOG_TAG, "One of the numbers is blank");
 			}
 			}

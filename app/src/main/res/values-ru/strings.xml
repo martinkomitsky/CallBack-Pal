@@ -1,0 +1,39 @@
+<resources>
+	<string name="app_name">CallBack Pal</string>
+
+	<string name="prompt_phone">Номер телефона</string>
+	<string name="prompt_password">Код</string>
+	<string name="action_calling_number">Идет набор %s </string>
+	<string name="action_sign_in_short">Войти</string>
+	<string name="action_validate_phone">Подтвердить телефон</string>
+	<string name="error_invalid_password">Этот код не подходит</string>
+	<string name="error_invalid_phone">Этот номер слишком короткий</string>
+	<string name="error_incorrect_password">Этот пароль неправильный</string>
+	<string name="error_field_required">Это обязательное поле</string>
+	<string name="permission_rationale">"Необходимо предоставить доступ к контактам, чтобы показать список."</string>
+	<string name="callback_caption">Система скоро вам отзвонится. Введите код выше.</string>
+	<string name="retry_validation">Не получили звонок? <u>Повторить</u>.</string>
+	<string name="image_avatar_description">Аватар контакта</string>
+	<string name="image_logo_description">Логотип приложения</string>
+	<string name="action_search">Поиск</string>
+
+	<string name="error_message">Что-то пошло не так: %s</string>
+
+	<string name="timer">Секунд осталось: %d</string>
+
+	<string name="info_next_call">Следующий звонок можно будет осуществить через одну секунду.</string>
+	<plurals name="info_next_call_plural">
+		<item quantity="one">Следующий звонок можно будет осуществить через %d секунду.</item>
+		<item quantity="few">Следующий звонок можно будет осуществить через %d секунды.</item>
+		<item quantity="many">Следующий звонок можно будет осуществить через %d секунд.</item>
+		<item quantity="other">Следующий звонок можно будет осуществить через %d секунды.</item>
+	</plurals>
+
+	<string name="info_dial">Идет набор…</string>
+
+	<string name="unknown_error">Произошла ошибка</string>
+
+	<string name="info_net_status_wifi_enabled">Wi-Fi подключен.</string>
+	<string name="info_net_status_mobile_enabled">Мобильный интернет подключен.</string>
+	<string name="info_net_status_disconnected">Не подключен к интернету.</string>
+</resources>

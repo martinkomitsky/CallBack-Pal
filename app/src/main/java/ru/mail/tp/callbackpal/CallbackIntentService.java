@@ -18,7 +18,7 @@ public class CallbackIntentService extends IntentService {
 
 	public static final String ACTION_INIT_CALLBACK = "ru.mail.tp.callbackpal.ACTION_INIT_CALLBACK";
 	public static final String ACTION_REQUEST_VALIDATION_CODE = "ru.mail.tp.callbackpal.ACTION_REQUEST_VALIDATION_CODE";
-	public static final String ACTION_INIT_CALLBACK_RESULT = "ru.mail.tp.callbackpal.ACTION_INIT_CALLBACK_RESULT";
+	private static final String ACTION_INIT_CALLBACK_RESULT = "ru.mail.tp.callbackpal.ACTION_INIT_CALLBACK_RESULT";
 	public static final String ACTION_REQUEST_VALIDATION_CODE_RESULT = "ru.mail.tp.callbackpal.ACTION_REQUEST_VALIDATION_CODE_RESULT";
 
 	public static final String EXTRA_NUMBER_A = "ru.mail.tp.callbackpal.NUMBER_A";
@@ -27,7 +27,7 @@ public class CallbackIntentService extends IntentService {
 	public static final String EXTRA_PHONE_NUMBER = "ru.mail.tp.callbackpal.EXTRA_PHONE_NUMBER";
 	public static final String EXTRA_PASSWORD = "ru.mail.tp.callbackpal.EXTRA_PASSWORD";
 
-	public static final String EXTRA_INIT_CALLBACK_RESULT = "ru.mail.tp.callbackpal.EXTRA_INIT_CALLBACK_RESULT";
+	private static final String EXTRA_INIT_CALLBACK_RESULT = "ru.mail.tp.callbackpal.EXTRA_INIT_CALLBACK_RESULT";
 	public static final String EXTRA_REQUEST_VALIDATION_CODE_RESULT = "ru.mail.tp.callbackpal.EXTRA_REQUEST_VALIDATION_CODE_RESULT";
 	public static final String EXTRA_ERROR_MESSAGE = "ru.mail.tp.callbackpal.EXTRA_ERROR_MESSAGE";
 
@@ -35,6 +35,12 @@ public class CallbackIntentService extends IntentService {
 
 	public CallbackIntentService() {
 		super("CallbackIntentService");
+	}
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		Log.d(LOG_TAG, "onCreate");
 	}
 
 	@Override
@@ -54,16 +60,9 @@ public class CallbackIntentService extends IntentService {
 		}
 	}
 
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		Log.d(LOG_TAG, "onCreate");
-	}
-
 	private void handleInitCallback(String numberA, String numberB) {
 		CommutationService commutationService = CommutationService.retrofit.create(CommutationService.class);
 		final Call<CommutateSubscribersResult> call = commutationService.requestCommutation(numberA, numberB);
-		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
 
 		call.enqueue(new Callback<CommutateSubscribersResult>() {
 			@Override
@@ -74,11 +73,7 @@ public class CallbackIntentService extends IntentService {
 				Bundle bundle = new Bundle();
 				bundle.putSerializable(EXTRA_INIT_CALLBACK_RESULT, response.body());
 
-				Intent broadcastIntent = new Intent();
-				broadcastIntent.setAction(ACTION_INIT_CALLBACK_RESULT);
-				broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-				broadcastIntent.putExtras(bundle);
-				localBroadcastManager.sendBroadcast(broadcastIntent);
+				sendBroadcast(bundle, ACTION_INIT_CALLBACK_RESULT);
 
 				Boolean result = response.body().getResult();
 				if (result) {
@@ -96,11 +91,7 @@ public class CallbackIntentService extends IntentService {
 				Bundle bundle = new Bundle();
 				bundle.putString(EXTRA_ERROR_MESSAGE, errorMessage);
 
-				Intent broadcastIntent = new Intent();
-				broadcastIntent.setAction(ACTION_INIT_CALLBACK_RESULT);
-				broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-				broadcastIntent.putExtras(bundle);
-				localBroadcastManager.sendBroadcast(broadcastIntent);
+				sendBroadcast(bundle, ACTION_INIT_CALLBACK_RESULT);
 			}
 		});
 	}
@@ -110,7 +101,6 @@ public class CallbackIntentService extends IntentService {
 
 		ValidationService validationService = ValidationService.retrofit.create(ValidationService.class);
 		final Call<ValidationCode> call = validationService.requestValidationCode(phoneNumber);
-		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
 
 		call.enqueue(new Callback<ValidationCode>() {
 			@Override
@@ -121,11 +111,7 @@ public class CallbackIntentService extends IntentService {
 				Bundle bundle = new Bundle();
 				bundle.putSerializable(EXTRA_REQUEST_VALIDATION_CODE_RESULT, response.body());
 
-				Intent broadcastIntent = new Intent();
-				broadcastIntent.setAction(ACTION_REQUEST_VALIDATION_CODE_RESULT);
-				broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-				broadcastIntent.putExtras(bundle);
-				localBroadcastManager.sendBroadcast(broadcastIntent);
+				sendBroadcast(bundle, ACTION_REQUEST_VALIDATION_CODE_RESULT);
 			}
 
 			@Override
@@ -136,12 +122,16 @@ public class CallbackIntentService extends IntentService {
 				Bundle bundle = new Bundle();
 				bundle.putString(EXTRA_ERROR_MESSAGE, errorMessage);
 
-				Intent broadcastIntent = new Intent();
-				broadcastIntent.setAction(ACTION_REQUEST_VALIDATION_CODE_RESULT);
-				broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
-				broadcastIntent.putExtras(bundle);
-				localBroadcastManager.sendBroadcast(broadcastIntent);
+				sendBroadcast(bundle, ACTION_REQUEST_VALIDATION_CODE_RESULT);
 			}
 		});
+	}
+	private void sendBroadcast(Bundle bundle, String action) {
+		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+		Intent broadcastIntent = new Intent();
+		broadcastIntent.setAction(action);
+		broadcastIntent.addCategory(Intent.CATEGORY_DEFAULT);
+		broadcastIntent.putExtras(bundle);
+		localBroadcastManager.sendBroadcast(broadcastIntent);
 	}
 }

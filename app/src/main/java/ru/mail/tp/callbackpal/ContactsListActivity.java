@@ -234,7 +234,7 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 		@Override
 		public void onNetworkStateChange(String message, boolean state) {
 			networkState = state;
-			InformerCreator.showSnack(message, state, findViewById(R.id.rvContacts));
+			InformerCreator.showSnack(message, state, findViewById(R.id.FAB));
 		}
 	}
 }

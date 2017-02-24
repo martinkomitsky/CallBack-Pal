@@ -73,7 +73,11 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 						.putExtra(CallbackIntentService.EXTRA_NUMBER_B, currentPhone);
 				mContext.startService(intent);
 
+				CallHistoryHelper callHistoryHelper = new CallHistoryHelper(mContext);
 				callHistoryHelper.putRecord("89165599432", new Date());
+				ArrayList kek = callHistoryHelper.getAllRecords();
+				Log.d("sd", "sd");
+
 				callBackFN();
 			} else {
 				InformerCreator.showToast(mContext.getString(R.string.unknown_error), mContext);

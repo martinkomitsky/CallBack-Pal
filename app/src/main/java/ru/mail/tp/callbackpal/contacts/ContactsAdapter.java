@@ -29,12 +29,9 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 	public void callBackFN(){}
 	public boolean getNetworkState(){ return false;}
 
-	private CallHistoryHelper callHistoryHelper;
-
-	public ContactsAdapter(List<Contact> contactList, Context mContext){
+	public ContactsAdapter(List<Contact> contactList, Context mContext) {
 		this.contactList = contactList;
 		this.mContext = mContext;
-		this.callHistoryHelper = new CallHistoryHelper(mContext);
 	}
 
 	@Override
@@ -81,8 +78,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 					currentPhone,
 					new Date()
 				));
-
-				ArrayList kek = callHistoryHelper.getAllRecords();
 
 				callBackFN();
 			} else {

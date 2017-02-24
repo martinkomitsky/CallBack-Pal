@@ -5,15 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.telecom.Call;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by Martin on 20.02.2017.
+ * martin00@yandex.ru
  */
 
 public class CallHistoryHelper extends SQLiteOpenHelper {
@@ -70,7 +69,7 @@ public class CallHistoryHelper extends SQLiteOpenHelper {
 		return insertedRowId;
 	}
 
-	public ArrayList<ru.mail.tp.callbackpal.contacts.Call> getAllRecords(long limit, long offset) {
+	private ArrayList<ru.mail.tp.callbackpal.contacts.Call> getAllRecords(long limit, long offset) {
 		Log.d(LOG_TAG, String.format("Select rows from %d with LIMIT %d", offset, limit));
 
 		String selectQuery = "SELECT * FROM " + DATABASE_TABLE;

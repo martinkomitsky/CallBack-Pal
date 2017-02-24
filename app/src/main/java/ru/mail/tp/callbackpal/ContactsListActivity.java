@@ -27,7 +27,6 @@ import java.util.List;
 
 import ru.mail.tp.callbackpal.contacts.Contact;
 import ru.mail.tp.callbackpal.contacts.ContactsAdapter;
-import ru.mail.tp.callbackpal.db.CallHistoryHelper;
 import ru.mail.tp.callbackpal.networkState.NetworkChangeReceiver;
 import ru.mail.tp.callbackpal.networkState.NetworkStateChangeListener;
 import ru.mail.tp.callbackpal.utils.InformerCreator;
@@ -85,10 +84,6 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 		networkChangedFilter.addAction(NetworkChangeReceiver.ACTION_WIFI_CHANGE);
 		networkChangedFilter.addCategory(Intent.CATEGORY_DEFAULT);
 		registerReceiver(networkChangedBroadcastReceiver, networkChangedFilter);
-
-		CallHistoryHelper callHistoryHelper = new CallHistoryHelper(this);
-		ArrayList kek = callHistoryHelper.getAllRecords();
-		Log.d("sd", "sd");
 	}
 
 	private void showTimerDialog() {

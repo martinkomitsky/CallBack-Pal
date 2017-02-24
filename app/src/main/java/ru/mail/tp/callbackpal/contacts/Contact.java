@@ -1,8 +1,8 @@
 package ru.mail.tp.callbackpal.contacts;
 
 public class Contact {
-	private String ContactName;
-	private String ContactNumber;
+	public String ContactName;
+	public String ContactNumber;
 
 	public String getContactName() {
 		return ContactName;

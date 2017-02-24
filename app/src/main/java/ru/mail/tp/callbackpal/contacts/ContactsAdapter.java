@@ -61,6 +61,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 			@Override
 			public void onClick(View v) {
 			String currentPhone = holder.tvPhoneNumber.getText().toString().replaceAll("[^0-9+]", "");
+			String currentName = holder.tvContactName.getText().toString();
 			String phoneA = SharedPreferenceHelper.getValue(mContext, SharedPreferenceHelper.SHARED_PREF_VALUE_PHONE);
 
 			if (phoneA != null && phoneA.length() > 0 && currentPhone != null && currentPhone.length() > 0 && getNetworkState()) {
@@ -74,9 +75,14 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 				mContext.startService(intent);
 
 				CallHistoryHelper callHistoryHelper = new CallHistoryHelper(mContext);
-				callHistoryHelper.putRecord("89165599432", new Date());
+
+				callHistoryHelper.addHistoryRecord(new Call(
+					currentName,
+					currentPhone,
+					new Date()
+				));
+
 				ArrayList kek = callHistoryHelper.getAllRecords();
-				Log.d("sd", "sd");
 
 				callBackFN();
 			} else {

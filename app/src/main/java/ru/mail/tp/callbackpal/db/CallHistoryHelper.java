@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.telecom.Call;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -17,8 +18,18 @@ import java.util.Locale;
 
 public class CallHistoryHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "ru.mail.tp.callbackpal.database.name.HISTORY_STORAGE";
-	private static final String DATABASE_TABLENAME = "storage";
+	private static final String DATABASE_TABLE = "calls";
 	private static final int DATABASE_VERSION = 1;
+
+	private static final String KEY_ID = "id";
+	private static final String KEY_NAME = "name";
+	private static final String KEY_PHONENUMBER = "phone_number";
+	private static final String KEY_DATE = "unixtime";
+
+	private static final String CREATE_TABLE_CALLS = "CREATE TABLE "
+			+ DATABASE_TABLE + "(" + KEY_ID
+			+ " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT,"
+			+ KEY_PHONENUMBER + " TEXT, " + KEY_DATE + " INTEGER);";
 
 	private static final String LOG_TAG = "[HistoryDBHelper]";
 
@@ -30,68 +41,71 @@ public class CallHistoryHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		Log.d(LOG_TAG, "Database Schema creation");
 
-		db.execSQL(String.format("create table %s (id integer primary key autoincrement, phone text, unixtime integer);", DATABASE_TABLENAME));
+		db.execSQL(CREATE_TABLE_CALLS);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		if (newVersion != oldVersion) {
-			Log.d(LOG_TAG, "Database Schema update");
+			Log.d(LOG_TAG, "onUpgrade");
 
-			db.execSQL(String.format("drop table if exists %s;", DATABASE_TABLENAME));
+			db.execSQL("DROP TABLE IF EXISTS " + CREATE_TABLE_CALLS);
 			onCreate(db);
 		}
 	}
 
-	public void putRecord(String phone, Date date) {
-		final long unixtime = date.getTime();
-
-		ContentValues cv = new ContentValues();
-
-		cv.put("phone", phone);
-		cv.put("unixtime", unixtime);
-
+	public long addHistoryRecord(ru.mail.tp.callbackpal.contacts.Call callModel) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
-		final long insertedRowId = db.insert(DATABASE_TABLENAME, null, cv);
+		ContentValues values = new ContentValues();
+		values.put(KEY_PHONENUMBER, callModel.ContactNumber);
+		values.put(KEY_NAME, callModel.ContactName);
+		values.put(KEY_DATE, callModel.date.getTime());
 
-		Log.d(LOG_TAG, String.format("Row %d inserted (phone %s at %s)", insertedRowId, phone, date.toString()));
+		final long insertedRowId = db.insert(DATABASE_TABLE, null, values);
 
+		Log.d(LOG_TAG, String.format("Row %d inserted (phone %s at %s)", insertedRowId, callModel.ContactNumber, callModel.date.toString()));
 		db.close();
+
+		return insertedRowId;
 	}
 
-	public ArrayList<ContentValues> getAllRecords(long limit, long offset) {
-		Log.d(LOG_TAG, String.format("Extract rows from %d with LIMIT %d", offset, limit));
+	public ArrayList<ru.mail.tp.callbackpal.contacts.Call> getAllRecords(long limit, long offset) {
+		Log.d(LOG_TAG, String.format("Select rows from %d with LIMIT %d", offset, limit));
 
-		SQLiteDatabase db = this.getWritableDatabase();
-		Cursor cursor = db.query(DATABASE_TABLENAME, null, null, null, null, null, "unixtime DESC", String.format(Locale.US, "%d,%d", offset, limit));
-
-		final ArrayList<ContentValues> result = new ArrayList<>(cursor.getCount());
+		String selectQuery = "SELECT * FROM " + DATABASE_TABLE;
+		SQLiteDatabase db = this.getReadableDatabase();
+//		Cursor cursor = db.query(DATABASE_TABLE, null, null, null, null, null, "unixtime DESC", String.format(Locale.US, "%d,%d", offset, limit));
+		Cursor cursor = db.rawQuery(selectQuery, null);
+		final ArrayList<ru.mail.tp.callbackpal.contacts.Call> callsHistoryArrayList = new ArrayList<>(cursor.getCount());
 
 		if (cursor.moveToFirst()) {
-			final int phoneColumnIndex = cursor.getColumnIndex("phone");
-			final int unixtimeColuntIndex = cursor.getColumnIndex("unixtime");
 
 			do {
-				ContentValues cv = new ContentValues();
+				ru.mail.tp.callbackpal.contacts.Call callModel = new ru.mail.tp.callbackpal.contacts.Call();
+				callModel.id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
+				callModel.ContactNumber = cursor.getString(cursor.getColumnIndex(KEY_PHONENUMBER));
+				callModel.ContactName = cursor.getString(cursor.getColumnIndex(KEY_NAME));
+				long unix_time = cursor.getLong(cursor.getColumnIndex(KEY_DATE));
+				Date date = new Date(unix_time);
+				callModel.date = date;
+				Log.d(LOG_TAG, date.toString());
 
-				cv.put("phone", cursor.getString(phoneColumnIndex));
-				cv.put("unixtime", cursor.getLong(unixtimeColuntIndex));
-				result.add(cv);
+				callsHistoryArrayList.add(callModel);
 			} while (cursor.moveToNext());
 		}
 
 		cursor.close();
 		db.close();
 
-		return result;
+		return callsHistoryArrayList;
 	}
 
-	public ArrayList<ContentValues> getAllRecords(long limit) {
+	public ArrayList<ru.mail.tp.callbackpal.contacts.Call> getAllRecords(long limit) {
 		return getAllRecords(limit, 0);
 	}
 
-	public ArrayList<ContentValues> getAllRecords() {
+	public ArrayList<ru.mail.tp.callbackpal.contacts.Call> getAllRecords() {
 		return getAllRecords(0, 0);
 	}
 }

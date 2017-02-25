@@ -3,9 +3,7 @@
 	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:orientation="vertical"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	>
-
+	android:layout_height="match_parent" >
 
 	<ImageView
 		android:id="@+id/appLogo"
@@ -14,5 +12,5 @@
 		app:srcCompat="@drawable/applogowithtext"
 		android:paddingLeft="25dp"
 		android:paddingRight="25dp"
-		android:contentDescription="@string/image_logo_description"/>
-</LinearLayout>
+		android:contentDescription="@string/image_logo_description" />
+	</LinearLayout>

@@ -1,42 +1,45 @@
 package ru.mail.tp.callbackpal;
 
-import android.app.LoaderManager;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
-import android.content.CursorLoader;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.Loader;
-import android.database.Cursor;
-import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.ContactsContract;
+import android.database.Cursor;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import ru.mail.tp.callbackpal.contacts.Contact;
 import ru.mail.tp.callbackpal.contacts.ContactsAdapter;
 import ru.mail.tp.callbackpal.networkState.NetworkChangeReceiver;
 import ru.mail.tp.callbackpal.networkState.NetworkStateChangeListener;
 import ru.mail.tp.callbackpal.utils.InformerCreator;
 
-import android.view.View;
-import android.widget.TextView;
+/**
+ * Created by Martin on 25.02.2017.
+ * martin00@yandex.ru
+ */
 
-public class ContactsListActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class ContactsListFragment extends Fragment implements SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor> {
 	private ContactsAdapter contactAdapter;
 	private BroadcastReceiver networkChangedBroadcastReceiver;
-	private final List<Contact> contactList = new ArrayList<>();
 	private final String LOG_TAG = "ContactListActivity";
 
 	private boolean networkState = false;
@@ -48,16 +51,28 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 			ContactsContract.CommonDataKinds.Phone.NUMBER
 	};
 
+	private Context mContext;
+
+	public ContactsListFragment() {}
+
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_contacts_list);
-		Log.d(LOG_TAG, "onCreate");
+		setHasOptionsMenu(true);
+
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View rootView = inflater.inflate(R.layout.fragment_contacts_list, container, false);
+		Log.d(LOG_TAG, "onCreateView");
+
+		mContext = getContext();
 
 		getLoaderManager().initLoader(0, null, this);
-		RecyclerView rvContacts = (RecyclerView) findViewById(R.id.rvContacts);
+		RecyclerView rvContacts = (RecyclerView) rootView.findViewById(R.id.rvContacts);
 
-		View fab = findViewById(R.id.FAB);
+		View fab = rootView.findViewById(R.id.FAB);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -65,8 +80,8 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 				startActivity(intent);
 			}
 		});
-//		contactAdapter = new ContactsAdapter(contactList, getApplicationContext()) {
-		contactAdapter = new ContactsAdapter(null, getApplicationContext()) {
+
+		contactAdapter = new ContactsAdapter(null, mContext) {
 			@Override
 			public void callBackFN(){
 				showTimerDialog();
@@ -77,18 +92,20 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 				return networkState;
 			}
 		};
-		rvContacts.setLayoutManager(new LinearLayoutManager(this));
+		rvContacts.setLayoutManager(new LinearLayoutManager(mContext));
 		rvContacts.setAdapter(contactAdapter);
 
 		networkChangedBroadcastReceiver = new NetworkChangeReceiver(new CallbackRunner());
 		IntentFilter networkChangedFilter = new IntentFilter(NetworkChangeReceiver.ACTION_CONN_CHANGE);
 		networkChangedFilter.addAction(NetworkChangeReceiver.ACTION_WIFI_CHANGE);
 		networkChangedFilter.addCategory(Intent.CATEGORY_DEFAULT);
-		registerReceiver(networkChangedBroadcastReceiver, networkChangedFilter);
+		mContext.registerReceiver(networkChangedBroadcastReceiver, networkChangedFilter);
+
+		return rootView;
 	}
 
 	private void showTimerDialog() {
-		final Dialog dialog = new Dialog(this);
+		final Dialog dialog = new Dialog(getContext());
 		dialog.setContentView(R.layout.popup_window);
 		dialog.setTitle(R.string.info_dial);
 
@@ -112,64 +129,38 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.contacts_menu, menu);
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.contacts_menu, menu);
 
 		final MenuItem item = menu.findItem(R.id.action_search);
 		final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
 		searchView.setOnQueryTextListener(this);
 
 		MenuItemCompat.setOnActionExpandListener(
-			item,
-			new MenuItemCompat.OnActionExpandListener() {
-				@Override
-				public boolean onMenuItemActionCollapse(MenuItem item) {
-					// Do something when collapsed
-//					contactAdapter.setFilter(contactList);
-					return true; // Return true to collapse action view
-				}
+				item,
+				new MenuItemCompat.OnActionExpandListener() {
+					@Override
+					public boolean onMenuItemActionCollapse(MenuItem item) {
+						// Do something when collapsed
+						contactAdapter.setFilter(null);
+						return true; // Return true to collapse action view
+					}
 
-				@Override
-				public boolean onMenuItemActionExpand(MenuItem item) {
-					// Do something when expanded
-					return true; // Return true to expand action view
+					@Override
+					public boolean onMenuItemActionExpand(MenuItem item) {
+						// Do something when expanded
+						return true; // Return true to expand action view
+					}
 				}
-			}
 		);
-
-		return super.onCreateOptionsMenu(menu);
-	}
-
-	@Override
-	public boolean onQueryTextSubmit(String query) {
-		return false;
-	}
-
-	@Override
-	public boolean onQueryTextChange(String newText) {
-		final List<Contact> filteredModelList = filter(contactList, newText);
-//		contactAdapter.setFilter(filteredModelList);
-		return true;
-	}
-
-	private List<Contact> filter(List<Contact> models, String query) {
-		query = query.toLowerCase();
-
-		final List<Contact> filteredModelList = new ArrayList<>();
-		for (Contact model : models) {
-			final String text = model.getContactName().toLowerCase();
-			if (text.contains(query)) {
-				filteredModelList.add(model);
-			}
-		}
-		return filteredModelList;
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 		Log.d(LOG_TAG, "onCreateLoader");
 		return new CursorLoader(
-				this,
+				getActivity(),
 				ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
 				PROJECTION,
 //				SELECTION,
@@ -183,30 +174,28 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-		if (cursor != null) {
-			if (cursor.getCount() > 0) {
-				while (cursor.moveToNext()) {
-					int hasPhoneNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)));
-					if (hasPhoneNumber > 0) {
-						contactList.add(new Contact(
-								cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),
-								cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-						));
-						contactAdapter.notifyDataSetChanged();
-					}
-				}
-			}
-		}
+		contactAdapter.swapCursor(cursor);
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
-
+		contactAdapter.swapCursor(null);
 	}
 
 	@Override
-	protected void onDestroy() {
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(networkChangedBroadcastReceiver);
+	public boolean onQueryTextSubmit(String query) {
+		return false;
+	}
+
+	@Override
+	public boolean onQueryTextChange(String newText) {
+		contactAdapter.setFilter(newText);
+		return true;
+	}
+
+	@Override
+	public void onDestroy() {
+		LocalBroadcastManager.getInstance(mContext).unregisterReceiver(networkChangedBroadcastReceiver);
 		super.onDestroy();
 	}
 
@@ -214,7 +203,7 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 		@Override
 		public void onNetworkStateChange(String message, boolean state) {
 			networkState = state;
-			InformerCreator.showSnack(message, state, findViewById(R.id.FAB));
+			InformerCreator.showSnack(message, state, getActivity().findViewById(R.id.FAB));
 		}
 	}
 }

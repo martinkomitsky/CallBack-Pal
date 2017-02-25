@@ -32,7 +32,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 				if (!activity.backPressed) {
 					if (activity.isValidated) {
 						Log.d(LOG_TAG, "Phone is validated");
-						Intent startSecondActivity = new Intent(activity, ContactsListActivity.class);
+						Intent startSecondActivity = new Intent(activity, MainDrawerActivity.class);
 						activity.startActivity(startSecondActivity);
 						activity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 					} else {

@@ -6,6 +6,8 @@
 	<string name="action_calling_number">Идет набор %s </string>
 	<string name="action_sign_in_short">Войти</string>
 	<string name="action_validate_phone">Подтвердить телефон</string>
+
+	<string name="action_dial_phone">Набрать</string>
 	<string name="error_invalid_password">Этот код не подходит</string>
 	<string name="error_invalid_phone">Этот номер слишком короткий</string>
 	<string name="error_incorrect_password">Этот пароль неправильный</string>
@@ -36,4 +38,12 @@
 	<string name="info_net_status_wifi_enabled">Wi-Fi подключен.</string>
 	<string name="info_net_status_mobile_enabled">Мобильный интернет подключен.</string>
 	<string name="info_net_status_disconnected">Не подключен к интернету.</string>
+
+	<string name="drawer_open">Открыть navigation drawer</string>
+	<string name="drawer_close">Закрыть navigation drawer</string>
+
+	<string name="drawer_menu_contacts_list">Контакты</string>
+	<string name="drawer_menu_call_history">История вызовов</string>
+	<string name="drawer_menu_dialer">Ввести номер</string>
+	<string name="drawer_menu_sign_out">Выйти</string>
 </resources>

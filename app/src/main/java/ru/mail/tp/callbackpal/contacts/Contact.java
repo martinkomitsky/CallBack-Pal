@@ -4,6 +4,15 @@ public class Contact {
 	public String ContactName;
 	public String ContactNumber;
 
+	public Contact (String name, String number) {
+		this.ContactName = name;
+		this.ContactNumber = number;
+	}
+
+	public Contact () {
+
+	}
+
 	public String getContactName() {
 		return ContactName;
 	}

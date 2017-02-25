@@ -3,7 +3,6 @@ package ru.mail.tp.callbackpal;
 import android.app.LoaderManager;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -45,7 +44,8 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 	private static final String[] PROJECTION = {
 			ContactsContract.Data._ID,
 			ContactsContract.Data.HAS_PHONE_NUMBER,
-			ContactsContract.Data.DISPLAY_NAME
+			ContactsContract.Data.DISPLAY_NAME,
+			ContactsContract.CommonDataKinds.Phone.NUMBER
 	};
 
 	@Override
@@ -169,7 +169,7 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 		Log.d(LOG_TAG, "onCreateLoader");
 		return new CursorLoader(
 				this,
-				ContactsContract.Contacts.CONTENT_URI,
+				ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
 				PROJECTION,
 //				SELECTION,
 //				mSelectionArgs,
@@ -182,37 +182,16 @@ public class ContactsListActivity extends AppCompatActivity implements SearchVie
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-		Contact contact;
-		ContentResolver contentResolver = getContentResolver();
 		if (cursor != null) {
 			if (cursor.getCount() > 0) {
 				while (cursor.moveToNext()) {
-
 					int hasPhoneNumber = Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)));
 					if (hasPhoneNumber > 0) {
-						String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-						String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-
-						contact = new Contact();
-						contact.setContactName(name);
-
-						Cursor phoneCursor = contentResolver.query(
-								ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-								null,
-								ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-								new String[]{id},
-								null
-						);
-
-						if (phoneCursor != null) {
-							if (phoneCursor.moveToNext()) {
-								String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-								contact.setContactNumber(phoneNumber);
-							}
-							phoneCursor.close();
-							contactList.add(contact);
-							contactAdapter.notifyDataSetChanged();
-						}
+						contactList.add(new Contact(
+								cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),
+								cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+						));
+						contactAdapter.notifyDataSetChanged();
 					}
 				}
 			}

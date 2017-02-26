@@ -5,15 +5,14 @@ package ru.mail.tp.callbackpal;
  * martin00@yandex.ru
  */
 
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class FirstFragment extends Fragment {
-	public FirstFragment() {}
+public class CallHistoryFragment extends Fragment {
+	public CallHistoryFragment() {}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

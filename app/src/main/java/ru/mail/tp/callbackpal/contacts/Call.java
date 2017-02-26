@@ -11,7 +11,7 @@ public class Call extends Contact {
 	public int id;
 	public Date date;
 
-	Call(String contactName, String contactNumber, Date date) {
+	public Call(String contactName, String contactNumber, Date date) {
 		this.ContactName = contactName;
 		this.ContactNumber = contactNumber;
 		this.date = date;

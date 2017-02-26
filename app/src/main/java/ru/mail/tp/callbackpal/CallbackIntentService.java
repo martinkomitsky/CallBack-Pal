@@ -25,7 +25,6 @@ public class CallbackIntentService extends IntentService {
 	public static final String EXTRA_NUMBER_B = "ru.mail.tp.callbackpal.NUMBER_B";
 
 	public static final String EXTRA_PHONE_NUMBER = "ru.mail.tp.callbackpal.EXTRA_PHONE_NUMBER";
-	public static final String EXTRA_PASSWORD = "ru.mail.tp.callbackpal.EXTRA_PASSWORD";
 
 	private static final String EXTRA_INIT_CALLBACK_RESULT = "ru.mail.tp.callbackpal.EXTRA_INIT_CALLBACK_RESULT";
 	public static final String EXTRA_REQUEST_VALIDATION_CODE_RESULT = "ru.mail.tp.callbackpal.EXTRA_REQUEST_VALIDATION_CODE_RESULT";
@@ -54,7 +53,6 @@ public class CallbackIntentService extends IntentService {
 				handleInitCallback(numberA, numberB);
 			} else if (action.equals(ACTION_REQUEST_VALIDATION_CODE)) {
 				final String phoneNumber = intent.getStringExtra(EXTRA_PHONE_NUMBER);
-//				final String password = intent.getStringExtra(EXTRA_PASSWORD);
 				handleRequestValidationCode(phoneNumber);
 			}
 		}

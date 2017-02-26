@@ -2,6 +2,7 @@ package ru.mail.tp.callbackpal;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -23,9 +24,7 @@ import ru.mail.tp.callbackpal.utils.SharedPreferenceHelper;
 public class MainDrawerActivity extends AppCompatActivity {
 	private DrawerLayout mDrawer;
 	private Toolbar toolbar;
-	private NavigationView nvDrawer;
 	private ActionBarDrawerToggle drawerToggle;
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +33,14 @@ public class MainDrawerActivity extends AppCompatActivity {
 
 		toolbar = (Toolbar) findViewById(R.id.toolbar);
 		mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-		nvDrawer = (NavigationView) findViewById(R.id.nvView);
+		NavigationView nvDrawer = (NavigationView) findViewById(R.id.nvView);
 
 		setSupportActionBar(toolbar);
 		setupDrawerContent(nvDrawer);
+
+		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+			toolbar.setElevation(20);
+		}
 
 		drawerToggle = setupDrawerToggle();
 		mDrawer.addDrawerListener(drawerToggle);
@@ -77,8 +80,8 @@ public class MainDrawerActivity extends AppCompatActivity {
 			case R.id.nav_contacts_fragment:
 				fragmentClass = ContactsListFragment.class;
 				break;
-			case R.id.nav_second_fragment:
-				fragmentClass = FirstFragment.class;
+			case R.id.nav_call_history_fragment:
+				fragmentClass = CallHistoryFragment.class;
 				break;
 			case R.id.nav_dialer_fragment:
 				fragmentClass = DialerFragment.class;
@@ -91,7 +94,7 @@ public class MainDrawerActivity extends AppCompatActivity {
 				finish();
 				return;
 			default:
-				fragmentClass = FirstFragment.class;
+				fragmentClass = ContactsListFragment.class;
 		}
 
 		try {
@@ -110,7 +113,6 @@ public class MainDrawerActivity extends AppCompatActivity {
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-		// Sync the toggle state after onRestoreInstanceState has occurred.
 		drawerToggle.syncState();
 	}
 

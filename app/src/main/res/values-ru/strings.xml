@@ -34,6 +34,7 @@
 	<string name="info_dial">Идет набор…</string>
 
 	<string name="unknown_error">Произошла ошибка</string>
+	<string name="unknown_contact">Неизвестный контактt</string>
 
 	<string name="info_net_status_wifi_enabled">Wi-Fi подключен.</string>
 	<string name="info_net_status_mobile_enabled">Мобильный интернет подключен.</string>

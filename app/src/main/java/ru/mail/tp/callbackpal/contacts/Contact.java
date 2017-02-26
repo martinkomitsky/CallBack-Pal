@@ -9,16 +9,10 @@ public class Contact {
 		this.ContactNumber = number;
 	}
 
-	Contact() {
-
-	}
+	Contact() {}
 
 	public String getContactName() {
 		return ContactName;
-	}
-
-	public void setContactName(String contactName) {
-		ContactName = contactName;
 	}
 
 	public String getContactNumber() {

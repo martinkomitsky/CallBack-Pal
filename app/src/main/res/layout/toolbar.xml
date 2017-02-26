@@ -6,7 +6,6 @@
 	android:layout_height="wrap_content"
 	android:layout_width="match_parent"
 	android:fitsSystemWindows="true"
-	android:elevation="15dp"
 	android:minHeight="?attr/actionBarSize"
 	app:theme="@style/Toolbar"
 	>

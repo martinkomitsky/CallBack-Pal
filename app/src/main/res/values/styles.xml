@@ -32,4 +32,7 @@
 		<item name="android:background">@color/colorPrimary</item>
 	</style>
 
+	<style name="NavHeader" parent="ThemeOverlay.AppCompat.Dark">
+		<item name="android:background">@color/colorPrimaryDark</item>
+	</style>
 </resources>

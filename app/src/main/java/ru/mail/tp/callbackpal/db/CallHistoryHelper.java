@@ -25,6 +25,8 @@ public class CallHistoryHelper extends SQLiteOpenHelper {
 	private static final String KEY_PHONENUMBER = "phone_number";
 	private static final String KEY_DATE = "unixtime";
 
+	private static final String SELECT_QUERY = "SELECT * FROM " + DATABASE_TABLE + " ORDER BY " + KEY_DATE + " DESC";
+
 	private static final String CREATE_TABLE_CALLS = "CREATE TABLE "
 			+ DATABASE_TABLE + "(" + KEY_ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT," + KEY_NAME + " TEXT,"
@@ -71,15 +73,18 @@ public class CallHistoryHelper extends SQLiteOpenHelper {
 
 	private ArrayList<ru.mail.tp.callbackpal.contacts.Call> getAllRecords(long limit, long offset) {
 		Log.d(LOG_TAG, String.format("Select rows from %d with LIMIT %d", offset, limit));
-
-		String selectQuery = "SELECT * FROM " + DATABASE_TABLE;
 		SQLiteDatabase db = this.getReadableDatabase();
 //		Cursor cursor = db.query(DATABASE_TABLE, null, null, null, null, null, "unixtime DESC", String.format(Locale.US, "%d,%d", offset, limit));
-		Cursor cursor = db.rawQuery(selectQuery, null);
+		Cursor cursor = db.rawQuery(SELECT_QUERY, null);
+		ArrayList<ru.mail.tp.callbackpal.contacts.Call> callsHistoryArrayList = parseCursor(cursor);
+		db.close();
+		return callsHistoryArrayList;
+	}
+
+	public ArrayList<ru.mail.tp.callbackpal.contacts.Call> parseCursor(Cursor cursor) {
 		final ArrayList<ru.mail.tp.callbackpal.contacts.Call> callsHistoryArrayList = new ArrayList<>(cursor.getCount());
 
 		if (cursor.moveToFirst()) {
-
 			do {
 				ru.mail.tp.callbackpal.contacts.Call callModel = new ru.mail.tp.callbackpal.contacts.Call();
 				callModel.id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
@@ -95,8 +100,6 @@ public class CallHistoryHelper extends SQLiteOpenHelper {
 		}
 
 		cursor.close();
-		db.close();
-
 		return callsHistoryArrayList;
 	}
 
@@ -106,5 +109,10 @@ public class CallHistoryHelper extends SQLiteOpenHelper {
 
 	public ArrayList<ru.mail.tp.callbackpal.contacts.Call> getAllRecords() {
 		return getAllRecords(0, 0);
+	}
+
+	public Cursor getCursor() {
+		SQLiteDatabase db = this.getReadableDatabase();
+		return db.rawQuery(SELECT_QUERY, null);
 	}
 }

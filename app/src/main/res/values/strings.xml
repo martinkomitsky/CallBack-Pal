@@ -49,4 +49,8 @@
 	<string name="drawer_menu_call_history">Call history</string>
 	<string name="drawer_menu_dialer">Dialer</string>
 	<string name="drawer_menu_sign_out">Sign out</string>
+	<string name="date">Date</string>
+	<string name="number">Number</string>
+	<string name="no">No:</string>
+	<string name="unknown">Unknown</string>
 </resources>

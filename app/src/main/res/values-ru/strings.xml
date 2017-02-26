@@ -47,4 +47,8 @@
 	<string name="drawer_menu_call_history">История вызовов</string>
 	<string name="drawer_menu_dialer">Ввести номер</string>
 	<string name="drawer_menu_sign_out">Выйти</string>
+	<string name="date">Дата</string>
+	<string name="number">Номер</string>
+	<string name="no">No:</string>
+	<string name="unknown">Неизвестный</string>
 </resources>

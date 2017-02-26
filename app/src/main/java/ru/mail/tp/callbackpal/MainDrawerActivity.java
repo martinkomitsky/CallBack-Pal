@@ -1,5 +1,6 @@
 package ru.mail.tp.callbackpal;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -52,6 +53,12 @@ public class MainDrawerActivity extends AppCompatActivity {
 		return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
 	}
 
+	private void signOut() {
+		SharedPreferenceHelper.setValue(this, SharedPreferenceHelper.SHARED_PREF_VALUE_VALIDATION_STATUS, false);
+		SharedPreferenceHelper.setValue(this, SharedPreferenceHelper.SHARED_PREF_VALUE_PHONE, null);
+		//TODO: clear historyDB
+	}
+
 	private void setupDrawerContent(NavigationView navigationView) {
 		navigationView.setNavigationItemSelectedListener(
 				new NavigationView.OnNavigationItemSelectedListener() {
@@ -63,8 +70,7 @@ public class MainDrawerActivity extends AppCompatActivity {
 				});
 	}
 
-	public void selectDrawerItem(MenuItem menuItem) {
-		// Create a new fragment and specify the fragment to show based on nav item clicked
+	private void selectDrawerItem(MenuItem menuItem) {
 		Fragment fragment = null;
 		Class fragmentClass;
 		switch (menuItem.getItemId()) {
@@ -77,6 +83,13 @@ public class MainDrawerActivity extends AppCompatActivity {
 			case R.id.nav_dialer_fragment:
 				fragmentClass = DialerFragment.class;
 				break;
+			case R.id.nav_sign_out:
+				signOut();
+				Intent startSecondActivity = new Intent(this, SplashScreenActivity.class);
+				startActivity(startSecondActivity);
+				overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+				finish();
+				return;
 			default:
 				fragmentClass = FirstFragment.class;
 		}
@@ -87,15 +100,11 @@ public class MainDrawerActivity extends AppCompatActivity {
 			e.printStackTrace();
 		}
 
-		// Insert the fragment by replacing any existing fragment
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
-		// Highlight the selected item has been done by NavigationView
 		menuItem.setChecked(true);
-		// Set action bar title
 		setTitle(menuItem.getTitle());
-		// Close the navigation drawer
 		mDrawer.closeDrawers();
 	}
 	@Override
@@ -108,7 +117,6 @@ public class MainDrawerActivity extends AppCompatActivity {
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-		// Pass any configuration change to the drawer toggles
 		drawerToggle.onConfigurationChanged(newConfig);
 	}
 

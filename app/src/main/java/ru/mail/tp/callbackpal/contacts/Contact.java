@@ -9,7 +9,7 @@ public class Contact {
 		this.ContactNumber = number;
 	}
 
-	public Contact () {
+	Contact() {
 
 	}
 

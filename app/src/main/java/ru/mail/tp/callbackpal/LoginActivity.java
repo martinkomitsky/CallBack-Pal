@@ -195,7 +195,7 @@ public class LoginActivity extends AppCompatActivity {
 						SharedPreferenceHelper.setValue(getApplicationContext(), SharedPreferenceHelper.SHARED_PREF_VALUE_VALIDATION_STATUS, true);
 						SharedPreferenceHelper.setValue(getApplicationContext(), SharedPreferenceHelper.SHARED_PREF_VALUE_PHONE, PHONE_COUNTRY_CODE + mPhoneView.getUnmaskedText());
 
-						Intent startSecondActivity = new Intent(LoginActivity.this, ContactsListActivity.class);
+						Intent startSecondActivity = new Intent(LoginActivity.this, MainDrawerActivity.class);
 						LoginActivity.this.startActivity(startSecondActivity);
 						finish();
 

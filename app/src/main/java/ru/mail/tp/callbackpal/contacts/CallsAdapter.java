@@ -24,7 +24,6 @@ public class CallsAdapter extends RecyclerView.Adapter<CallsAdapter.ContactViewH
 	private List<Call> callsList = new ArrayList<>();
 	private Cursor dataCursor;
 	private final Context mContext;
-	private static final String LOG_TAG = "[CallsAdapter]";
 
 	public CallsAdapter(Cursor mCursor, Context mContext) {
 		this.dataCursor = mCursor;
@@ -66,7 +65,7 @@ public class CallsAdapter extends RecyclerView.Adapter<CallsAdapter.ContactViewH
 		holder.tvContactName.setText(call.getContactName());
 		holder.tvPhoneNumber.setText(call.getContactNumber());
 		holder.tvDate.setText(call.date.toString());
-		holder.tvType.setText("Outgoing");
+		holder.tvType.setText(R.string.call_type);
 	}
 
 	@Override
@@ -86,7 +85,6 @@ public class CallsAdapter extends RecyclerView.Adapter<CallsAdapter.ContactViewH
 			tvPhoneNumber = (TextView) itemView.findViewById(R.id.tvNumberMain);
 			tvDate = (TextView) itemView.findViewById(R.id.tvDate);
 			tvType = (TextView) itemView.findViewById(R.id.tvType);
-
 		}
 	}
 }

@@ -40,7 +40,7 @@ import ru.mail.tp.callbackpal.utils.InformerCreator;
 public class ContactsListFragment extends Fragment implements SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor> {
 	private ContactsAdapter contactAdapter;
 	private BroadcastReceiver networkChangedBroadcastReceiver;
-	private final String LOG_TAG = "ContactListActivity";
+	private final String LOG_TAG = "ContactsListFragment";
 
 	private boolean networkState = false;
 

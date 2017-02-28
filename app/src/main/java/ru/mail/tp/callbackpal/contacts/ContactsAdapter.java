@@ -30,7 +30,6 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 	private final Context mContext;
 	private static final String LOG_TAG = "[ContactsAdapter]";
 
-	public void callBackFN(){}
 	public boolean getNetworkState(){ return false;}
 
 	public ContactsAdapter(Cursor mCursor, Context mContext) {
@@ -108,7 +107,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 						new Date()
 					));
 
-					callBackFN();
+					InformerCreator.showTimerDialog(mContext);
 				} else {
 					InformerCreator.showToast(mContext.getString(R.string.unknown_error), mContext);
 					Log.d(LOG_TAG, "One of the numbers is blank");

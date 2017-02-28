@@ -1,11 +1,9 @@
 package ru.mail.tp.callbackpal;
 
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.CountDownTimer;
 import android.provider.ContactsContract;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -25,7 +23,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import ru.mail.tp.callbackpal.contacts.ContactsAdapter;
 import ru.mail.tp.callbackpal.networkState.NetworkChangeReceiver;
@@ -82,11 +79,6 @@ public class ContactsListFragment extends Fragment implements SearchView.OnQuery
 
 		contactAdapter = new ContactsAdapter(null, mContext) {
 			@Override
-			public void callBackFN(){
-				showTimerDialog();
-			}
-
-			@Override
 			public boolean getNetworkState() {
 				return networkState;
 			}
@@ -101,30 +93,6 @@ public class ContactsListFragment extends Fragment implements SearchView.OnQuery
 		mContext.registerReceiver(networkChangedBroadcastReceiver, networkChangedFilter);
 
 		return rootView;
-	}
-
-	private void showTimerDialog() {
-		final Dialog dialog = new Dialog(getContext());
-		dialog.setContentView(R.layout.popup_window);
-		dialog.setTitle(R.string.info_dial);
-
-		final TextView mDialogText = (TextView) dialog.findViewById(R.id.text);
-		dialog.setCancelable(false);
-		dialog.setCanceledOnTouchOutside(false);
-		dialog.show();
-
-		new CountDownTimer(15000, 1000) {
-
-			public void onTick(long millisUntilFinished) {
-				int count =  (int) millisUntilFinished / 1000;
-				mDialogText.setText(getResources().getQuantityString(R.plurals.info_next_call_plural, count, count));
-			}
-
-			public void onFinish() {
-				mDialogText.setText("");
-				dialog.dismiss();
-			}
-		}.start();
 	}
 
 	@Override

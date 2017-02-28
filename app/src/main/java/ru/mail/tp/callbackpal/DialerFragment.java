@@ -38,10 +38,11 @@ public class DialerFragment extends Fragment {
 		mDialButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				mPhoneView.setError(null);
 				String currentPhone = mPhoneView.getText().toString().replaceAll("[^0-9+]", "");
 				String phoneA = SharedPreferenceHelper.getValue(getActivity(), SharedPreferenceHelper.SHARED_PREF_VALUE_PHONE);
 
-				if (phoneA != null && phoneA.length() > 0 && currentPhone != null && currentPhone.length() > 2) {
+				if (phoneA != null && phoneA.length() > 0 && currentPhone != null && currentPhone.length() > 11) {
 					InformerCreator.showToast(String.format(getActivity().getString(R.string.action_calling_number), currentPhone), getActivity());
 
 					Intent intent = new Intent(getActivity().getApplicationContext(), CallbackIntentService.class)
@@ -50,6 +51,7 @@ public class DialerFragment extends Fragment {
 							.putExtra(CallbackIntentService.EXTRA_NUMBER_B, currentPhone);
 					getActivity().startService(intent);
 
+					InformerCreator.showTimerDialog(getContext());
 					CallHistoryHelper callHistoryHelper = new CallHistoryHelper(getActivity());
 
 					callHistoryHelper.addHistoryRecord(new Call(
@@ -58,7 +60,7 @@ public class DialerFragment extends Fragment {
 							new Date()
 					));
 				} else {
-					InformerCreator.showToast(getContext().getString(R.string.unknown_error), getContext());
+					mPhoneView.setError(getString(R.string.error_invalid_phone));
 					Log.d(LOG_TAG, "One of the numbers is blank");
 				}
 			}

@@ -140,15 +140,13 @@ public class ContactsListFragment extends Fragment implements SearchView.OnQuery
 				new MenuItemCompat.OnActionExpandListener() {
 					@Override
 					public boolean onMenuItemActionCollapse(MenuItem item) {
-						// Do something when collapsed
 						contactAdapter.setFilter(null);
-						return true; // Return true to collapse action view
+						return true;
 					}
 
 					@Override
 					public boolean onMenuItemActionExpand(MenuItem item) {
-						// Do something when expanded
-						return true; // Return true to expand action view
+						return true;
 					}
 				}
 		);

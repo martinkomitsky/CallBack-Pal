@@ -12,8 +12,7 @@ public class CommutateSubscribersResult implements Serializable {
 	private String function;
 	private Boolean result;
 
-	CommutateSubscribersResult() {
-	}
+	CommutateSubscribersResult() {}
 
 	CommutateSubscribersResult(String function, Boolean result) {
 		this.function = function;

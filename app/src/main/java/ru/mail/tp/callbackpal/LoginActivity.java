@@ -82,7 +82,6 @@ public class LoginActivity extends AppCompatActivity {
 		}
 		this.setTitle(getResources().getString(R.string.action_sign_in_short));
 
-		// Set up the login form.
 		mPhoneView = (MaskedEditText) findViewById(R.id.number_masked);
 		mPasswordView = (EditText) findViewById(R.id.password);
 		mLoginFormView = findViewById(R.id.login_form);
@@ -159,7 +158,6 @@ public class LoginActivity extends AppCompatActivity {
 						public void onTick(long millisUntilFinished) {
 							mTimerView.setVisibility(View.VISIBLE);
 							mTimerView.setText(String.format(getString(R.string.timer), millisUntilFinished / 1000));
-
 						}
 
 						public void onFinish() {
@@ -213,9 +211,7 @@ public class LoginActivity extends AppCompatActivity {
 		int id = item.getItemId();
 
 		if (id == android.R.id.home) {
-//			onBackPressed();
 			showSecondStep(false);
-//			return true;
 		}
 
 		return super.onOptionsItemSelected(item);

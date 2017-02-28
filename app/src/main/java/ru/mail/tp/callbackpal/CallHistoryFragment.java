@@ -22,7 +22,6 @@ import ru.mail.tp.callbackpal.db.CallHistoryHelper;
  */
 
 public class CallHistoryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-	private Context mContext;
 	private CallsAdapter callsAdapter;
 	private CallHistoryHelper callHistoryHelper;
 	public CallHistoryFragment() {}
@@ -31,7 +30,7 @@ public class CallHistoryFragment extends Fragment implements LoaderManager.Loade
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_call_history, container, false);
 		callHistoryHelper = new CallHistoryHelper(getContext());
-		mContext = getContext();
+		Context mContext = getContext();
 
 		getLoaderManager().initLoader(0, null, this);
 		RecyclerView rvCalls = (RecyclerView) rootView.findViewById(R.id.rvCalls);

@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +46,6 @@ public class CallsAdapter extends RecyclerView.Adapter<CallsAdapter.ContactViewH
 
 	@Override
 	public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//		View view = LayoutInflater.from(mContext).inflate(R.layout.view_single_contact, parent, false);
 		View view = LayoutInflater.from(mContext).inflate(R.layout.view_single_history, parent, false);
 
 		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
@@ -55,7 +53,6 @@ public class CallsAdapter extends RecyclerView.Adapter<CallsAdapter.ContactViewH
 		} else {
 			view.setBackgroundResource(R.drawable.contact_background);
 		}
-
 		return new ContactViewHolder(view);
 	}
 
